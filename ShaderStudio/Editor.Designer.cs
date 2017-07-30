@@ -28,9 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // Editor
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Text = "Form1";
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
+            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.ForeColor = System.Drawing.Color.White;
+            this.Name = "Editor";
+            this.Text = "ShaderStudio - Editor";
+            this.ResumeLayout(false);
+
         }
 
         #endregion
