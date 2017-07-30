@@ -28,14 +28,29 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.glControl1 = new OpenGL.GlControl();
             this.SuspendLayout();
+            // 
+            // glControl1
+            // 
+            this.glControl1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.glControl1.ColorBits = ((uint)(24u));
+            this.glControl1.DepthBits = ((uint)(0u));
+            this.glControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.glControl1.Location = new System.Drawing.Point(0, 0);
+            this.glControl1.MultisampleBits = ((uint)(0u));
+            this.glControl1.Name = "glControl1";
+            this.glControl1.Size = new System.Drawing.Size(1264, 681);
+            this.glControl1.StencilBits = ((uint)(0u));
+            this.glControl1.TabIndex = 0;
             // 
             // Editor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.ClientSize = new System.Drawing.Size(1264, 681);
+            this.Controls.Add(this.glControl1);
             this.ForeColor = System.Drawing.Color.White;
             this.Name = "Editor";
             this.Text = "ShaderStudio - Editor";
@@ -44,6 +59,8 @@
         }
 
         #endregion
+
+        private OpenGL.GlControl glControl1;
     }
 }
 

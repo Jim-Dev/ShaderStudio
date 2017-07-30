@@ -8,6 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using ScintillaNET;
+using OpenGL;
+
 namespace ShaderStudio
 {
     public partial class Editor : Form
