@@ -33,6 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommandsParser">
+      <HintPath>..\libs\CommandsParser.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework">
+      <HintPath>..\libs\Microsoft.Xna.Framework.dll</HintPath>
+    </Reference>
     <Reference Include="OpenGL.Net, Version=0.5.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenGL.Net.0.5.2\lib\net35\OpenGL.Net.dll</HintPath>
       <Private>True</Private>
@@ -58,12 +64,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Utils.cs" />
     <Compile Include="Editor.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Editor.Designer.cs">
       <DependentUpon>Editor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Core\ShaderBase.cs" />
+    <Compile Include="Core\ShaderProgram.cs" />
+    <Compile Include="Core\ShadersManager.cs" />
+    <Compile Include="Core\ShaderStage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Editor.resx">
