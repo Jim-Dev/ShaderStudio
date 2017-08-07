@@ -28,21 +28,26 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.glControl1 = new OpenGL.GlControl();
+            this.GLCanvas = new OpenGL.GlControl();
             this.SuspendLayout();
             // 
-            // glControl1
+            // GLCanvas
             // 
-            this.glControl1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.glControl1.ColorBits = ((uint)(24u));
-            this.glControl1.DepthBits = ((uint)(0u));
-            this.glControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.glControl1.Location = new System.Drawing.Point(0, 0);
-            this.glControl1.MultisampleBits = ((uint)(0u));
-            this.glControl1.Name = "glControl1";
-            this.glControl1.Size = new System.Drawing.Size(1264, 681);
-            this.glControl1.StencilBits = ((uint)(0u));
-            this.glControl1.TabIndex = 0;
+            this.GLCanvas.Animation = true;
+            this.GLCanvas.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.GLCanvas.ColorBits = ((uint)(24u));
+            this.GLCanvas.DepthBits = ((uint)(0u));
+            this.GLCanvas.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.GLCanvas.Location = new System.Drawing.Point(0, 0);
+            this.GLCanvas.MultisampleBits = ((uint)(0u));
+            this.GLCanvas.Name = "GLCanvas";
+            this.GLCanvas.Size = new System.Drawing.Size(1264, 681);
+            this.GLCanvas.StencilBits = ((uint)(0u));
+            this.GLCanvas.TabIndex = 0;
+            this.GLCanvas.ContextCreated += new System.EventHandler<OpenGL.GlControlEventArgs>(this.GLCanvas_ContextCreated);
+            this.GLCanvas.ContextDestroying += new System.EventHandler<OpenGL.GlControlEventArgs>(this.GLCanvas_ContextDestroying);
+            this.GLCanvas.Render += new System.EventHandler<OpenGL.GlControlEventArgs>(this.GLCanvas_Render);
+            this.GLCanvas.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GLCanvas_KeyDown);
             // 
             // Editor
             // 
@@ -50,7 +55,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.ClientSize = new System.Drawing.Size(1264, 681);
-            this.Controls.Add(this.glControl1);
+            this.Controls.Add(this.GLCanvas);
             this.ForeColor = System.Drawing.Color.White;
             this.Name = "Editor";
             this.Text = "ShaderStudio - Editor";
@@ -60,7 +65,7 @@
 
         #endregion
 
-        private OpenGL.GlControl glControl1;
+        private OpenGL.GlControl GLCanvas;
     }
 }
 

@@ -23,9 +23,12 @@ namespace ShaderStudio.Objects
             this.shaderProgram = shaderProgram;
         }
 
+        public List<string> RegisteredStages = new List<string>();
+
         public Renderable()
         {
-            this.shaderProgram = new ShaderProgram();
+            //this.shaderProgram = new ShaderProgram();
+            this.shaderProgram = ShadersManager.Instance.GetDefaultShader();
         }
 
         protected uint vAO;
@@ -70,6 +73,12 @@ namespace ShaderStudio.Objects
             SetProgram();
 
             SetProgramParameters();
+        }
+
+        public void ModifyShader(ShaderProgram program)
+        {
+            Reload();
+            this.shaderProgram = program;
         }
     }
 }
