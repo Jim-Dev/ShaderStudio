@@ -7,15 +7,23 @@ using System.Threading.Tasks;
 using ShaderStudio.Core;
 using OpenGL;
 using XNA = Microsoft.Xna.Framework;
+using System.Drawing;
+using System.IO;
 
 namespace ShaderStudio.Objects.Primitives
 {
     public class Primitive : Renderable
     {
+        public const string DEFAULT_TEXTURE_MAIN_NAME = "vertical.png";
+        public const string DEFAULT_TEXTURE_SECONDARY_NAME = "horizontal.png";
         public virtual float[] Vertices { get; }
         public virtual uint[] Indices { get; }
 
+        private string mainTextureName=string.Empty;
+        private string secondaryTextureName = string.Empty;
 
+        private ImageTexture mainImageTexture;
+        private ImageTexture secondaryImageTexture;
 
         public Primitive(ShaderProgram shaderProgram)
            : base(shaderProgram)
@@ -73,7 +81,30 @@ namespace ShaderStudio.Objects.Primitives
                 shaderProgram = ShadersManager.Instance.GetDefaultShader();
             else
                 shaderProgram = ShadersManager.Instance.BuildShaderProgram(RegisteredStages.ToArray());
-          
+
+            if (mainTextureName == string.Empty)
+                mainTextureName = DEFAULT_TEXTURE_MAIN_NAME;
+            mainImageTexture = new ImageTexture(mainTextureName, RotateFlipType.RotateNoneFlipNone);
+
+            if (secondaryTextureName == string.Empty)
+                secondaryTextureName = DEFAULT_TEXTURE_SECONDARY_NAME;
+             secondaryImageTexture = new ImageTexture(secondaryTextureName, RotateFlipType.RotateNoneFlipNone);
+
+
+            Gl.ActiveTexture(TextureUnit.Texture0);
+            mainImageTexture.Bind();
+            mainImageTexture.Release();
+            Gl.ActiveTexture(TextureUnit.Texture1);
+            secondaryImageTexture.Bind();
+            secondaryImageTexture.Release();
+
+        }
+
+        public override void SetProgramParameters()
+        {
+            ShaderProgram.Use();
+            ShaderProgram.SetInt("texture1", 0);
+            ShaderProgram.SetInt("texture2", 1);
         }
 
     }
