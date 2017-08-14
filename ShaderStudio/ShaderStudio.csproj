@@ -78,6 +78,7 @@
     <Compile Include="Core\ShadersManager.cs" />
     <Compile Include="Core\ShaderStage.cs" />
     <Compile Include="Objects\Primitives\Cube.cs" />
+    <Compile Include="Objects\Primitives\Grid.cs" />
     <Compile Include="Objects\Primitives\Primitive.cs" />
     <Compile Include="Objects\Primitives\Quad.cs" />
     <Compile Include="Objects\Renderable.cs" />

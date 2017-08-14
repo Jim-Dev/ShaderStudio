@@ -27,7 +27,7 @@ namespace ShaderStudio
         Camera DefaultCam;
         Quad quad1;
         Cube cube1;
-
+        Grid sceneGrid;
         public Editor()
         {
             InitializeComponent();
@@ -54,6 +54,7 @@ namespace ShaderStudio
             quad1 = new Quad();
             cube1 = new Cube();
             cube1.Position = new XNA.Vector3(0, 1.5f, 0);
+            sceneGrid = new Grid();
 
         }
         private void GLCanvas_ContextDestroying(object sender, GlControlEventArgs e)
@@ -66,10 +67,17 @@ namespace ShaderStudio
             //SetClearColor(Color.SlateBlue);
             Gl.VB.Viewport(0, 0, GLCanvas.Width, GLCanvas.Height);
             Gl.VB.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            sceneGrid.Render(DefaultCam.GetViewMatrix(), DefaultCam.GetProjectionMatrix((float)GLCanvas.Width, (float)GLCanvas.Height));
+
+
             quad1.Render(DefaultCam.GetViewMatrix(), DefaultCam.GetProjectionMatrix((float)GLCanvas.Width, (float)GLCanvas.Height));
             cube1.Render(DefaultCam.GetViewMatrix(), DefaultCam.GetProjectionMatrix((float)GLCanvas.Width, (float)GLCanvas.Height));
 
             cube1.Rotation *= XNA.Quaternion.CreateFromYawPitchRoll(0.005f,  0.01f,0);
+
+            DefaultCam.Position += new XNA.Vector3(0, 0.001f, 0);
+
         }
         #endregion
 
