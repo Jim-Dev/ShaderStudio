@@ -28,6 +28,15 @@ namespace ShaderStudio
         Quad quad1;
         Cube cube1;
         Grid sceneGrid;
+
+        private float CameraMovementSpeed = 0.75f;
+        private float CameraRotationSpeed = 0.75f;
+
+        private float CameraDeltaPitch = 0;
+        private float CameraDeltaYaw = 0;
+
+        private float DeltaTime = 0.17f;//60 fps
+
         public Editor()
         {
             InitializeComponent();
@@ -76,8 +85,6 @@ namespace ShaderStudio
 
             cube1.Rotation *= XNA.Quaternion.CreateFromYawPitchRoll(0.005f,  0.01f,0);
 
-            DefaultCam.Position += new XNA.Vector3(0, 0.001f, 0);
-
         }
         #endregion
 
@@ -118,6 +125,63 @@ namespace ShaderStudio
                 cube1.RegisteredStages.Add("DefaultFragment");
                 cube1.Reload();
             }
+
+
+            XNA.Vector3 camPositionDelta = XNA.Vector3.Zero;
+
+            #region CamPosition
+            if (e.KeyCode == Keys.T)
+            {
+                camPositionDelta += CameraMovementSpeed * DeltaTime * DefaultCam.CameraUp;
+            }
+            else if (e.KeyCode == Keys.G)
+            {
+                camPositionDelta -= CameraMovementSpeed * DeltaTime * DefaultCam.CameraUp;
+            }
+            if (e.KeyCode == Keys.W)
+            {
+                camPositionDelta += CameraMovementSpeed * DeltaTime * DefaultCam.CameraFront;
+            }
+            else if (e.KeyCode == Keys.S)
+            {
+                camPositionDelta -= CameraMovementSpeed * DeltaTime * DefaultCam.CameraFront;
+            }
+            if (e.KeyCode == Keys.A)
+            {
+                camPositionDelta -= XNA.Vector3.Normalize(XNA.Vector3.Cross(DefaultCam.CameraFront, DefaultCam.CameraUp)) * DeltaTime * CameraMovementSpeed;//Local
+            }
+            else if (e.KeyCode == Keys.D)
+            {
+                camPositionDelta += XNA.Vector3.Normalize(XNA.Vector3.Cross(DefaultCam.CameraFront, DefaultCam.CameraUp)) * DeltaTime * CameraMovementSpeed;
+            }
+            #endregion
+            #region CamRotation
+            CameraDeltaPitch = 0;
+            CameraDeltaYaw = 0;
+
+            if (e.KeyCode == Keys.Q)
+            {
+                CameraDeltaYaw = CameraRotationSpeed * DeltaTime;
+            }
+
+            if (e.KeyCode == Keys.E)
+            {
+                CameraDeltaYaw = -CameraRotationSpeed * DeltaTime;
+            }
+            if (e.KeyCode == Keys.R)
+            {
+                CameraDeltaPitch = CameraRotationSpeed * DeltaTime;
+            }
+
+            if (e.KeyCode == Keys.F)
+            {
+                CameraDeltaPitch = -CameraRotationSpeed * DeltaTime;
+            }
+            XNA.Quaternion q = XNA.Quaternion.CreateFromYawPitchRoll(CameraDeltaYaw, CameraDeltaPitch, 0);
+            #endregion
+
+            DefaultCam.Position += camPositionDelta;
+            DefaultCam.CameraFront = XNA.Vector3.Normalize(XNA.Vector3.Transform(DefaultCam.CameraFront, q));
         }
     }
 }
