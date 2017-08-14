@@ -19,6 +19,7 @@ namespace ShaderStudio.Core
 
         private Bitmap imageBitmap;
 
+                    public const string TEXTURES_FOLDER = "Resources/Textures";
         public void Lock()
         {
             bmpData =
@@ -41,7 +42,7 @@ namespace ShaderStudio.Core
         */
         public ImageTexture(string fileName, RotateFlipType flipType)
         {
-            string imagePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Textures", fileName);
+            string imagePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), TEXTURES_FOLDER, fileName);
             if (File.Exists(imagePath))
             {
                 imageBitmap = (Bitmap)Image.FromFile(imagePath);

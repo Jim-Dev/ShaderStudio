@@ -127,7 +127,7 @@ namespace ShaderStudio.Core
 
         public static ShaderStage LoadFromFile(string fileName, ShaderType shaderType)
         {
-            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Shaders", fileName);
+            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),ShadersManager.SHADERS_FOLDER, fileName);
             if (File.Exists(path))
             {
                 string[] fileContent = File.ReadAllLines(path);

@@ -103,8 +103,8 @@ namespace ShaderStudio.Objects.Primitives
         public override void SetProgramParameters()
         {
             ShaderProgram.Use();
-            ShaderProgram.SetInt("texture1", 0);
-            ShaderProgram.SetInt("texture2", 1);
+            ShaderProgram.SetInt("texBackground", 0);
+            ShaderProgram.SetInt("texForeground", 1);
         }
 
     }

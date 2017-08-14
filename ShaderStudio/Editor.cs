@@ -75,8 +75,8 @@ namespace ShaderStudio
             else if (e.KeyCode == Keys.F2)
             {
                 quad1.RegisteredStages.Clear();
-                quad1.RegisteredStages.Add("NoneVertex");
-                quad1.RegisteredStages.Add("CyanFragment");
+                quad1.RegisteredStages.Add("VertexColorVertex");
+                quad1.RegisteredStages.Add("VertexColorFragment");
                 quad1.Reload();
             }
             else if (e.KeyCode == Keys.F3)

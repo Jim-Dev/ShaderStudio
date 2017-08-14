@@ -18,7 +18,7 @@ namespace ShaderStudio.Core
         public const string FRAGMENT_SHADER_EXTENSION = ".frag";
         public const string COMPUTE_SHADER_EXTENSION = ".comp";
 
-        public const string SHADERS_FOLDER = "Shaders";
+        public const string SHADERS_FOLDER = "Resources/Shaders";
 
 
         private Dictionary<string, ShaderStage> LoadedShaders;//ShaderName,Shader
