@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using XNA = Microsoft.Xna.Framework;
+
 using ScintillaNET;
 using OpenGL;
 using ShaderStudio.Core;
@@ -24,6 +26,7 @@ namespace ShaderStudio
 
         Camera DefaultCam;
         Quad quad1;
+        Cube cube1;
 
         public Editor()
         {
@@ -49,6 +52,8 @@ namespace ShaderStudio
             ShadersManager.Instance.LoadShaders();
 
             quad1 = new Quad();
+            cube1 = new Cube();
+            cube1.Position = new XNA.Vector3(0, 1.5f, 0);
 
         }
         private void GLCanvas_ContextDestroying(object sender, GlControlEventArgs e)
@@ -62,6 +67,9 @@ namespace ShaderStudio
             Gl.VB.Viewport(0, 0, GLCanvas.Width, GLCanvas.Height);
             Gl.VB.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             quad1.Render(DefaultCam.GetViewMatrix(), DefaultCam.GetProjectionMatrix((float)GLCanvas.Width, (float)GLCanvas.Height));
+            cube1.Render(DefaultCam.GetViewMatrix(), DefaultCam.GetProjectionMatrix((float)GLCanvas.Width, (float)GLCanvas.Height));
+
+            cube1.Rotation *= XNA.Quaternion.CreateFromYawPitchRoll(0.005f,  0.01f,0);
         }
         #endregion
 
@@ -71,6 +79,11 @@ namespace ShaderStudio
             {
                 quad1.RegisteredStages.Clear();
                 quad1.Reload();
+
+                cube1.RegisteredStages.Clear();
+                cube1.Reload();
+
+
             }
             else if (e.KeyCode == Keys.F2)
             {
@@ -78,6 +91,12 @@ namespace ShaderStudio
                 quad1.RegisteredStages.Add("VertexColorVertex");
                 quad1.RegisteredStages.Add("VertexColorFragment");
                 quad1.Reload();
+
+
+                cube1.RegisteredStages.Clear();
+                cube1.RegisteredStages.Add("VertexColorVertex");
+                cube1.RegisteredStages.Add("VertexColorFragment");
+                cube1.Reload();
             }
             else if (e.KeyCode == Keys.F3)
             {
@@ -85,6 +104,11 @@ namespace ShaderStudio
                 quad1.RegisteredStages.Add("DefaultVertex");
                 quad1.RegisteredStages.Add("DefaultFragment");
                 quad1.Reload();
+
+                cube1.RegisteredStages.Clear();
+                cube1.RegisteredStages.Add("DefaultVertex");
+                cube1.RegisteredStages.Add("DefaultFragment");
+                cube1.Reload();
             }
         }
     }

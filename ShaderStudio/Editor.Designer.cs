@@ -36,7 +36,7 @@
             this.GLCanvas.Animation = true;
             this.GLCanvas.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.GLCanvas.ColorBits = ((uint)(24u));
-            this.GLCanvas.DepthBits = ((uint)(0u));
+            this.GLCanvas.DepthBits = ((uint)(1u));
             this.GLCanvas.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GLCanvas.Location = new System.Drawing.Point(0, 0);
             this.GLCanvas.MultisampleBits = ((uint)(0u));
