@@ -24,10 +24,8 @@ namespace ShaderStudio
         public const string MESSAGE_GL_CONTEXT_DESTROYED = "OpenGL Context Destroyed";
         #endregion
 
-        Camera DefaultCam;
         Quad quad1;
         Cube cube1;
-        Grid sceneGrid;
 
         private float CameraMovementSpeed = 0.75f;
         private float CameraRotationSpeed = 0.75f;
@@ -35,7 +33,7 @@ namespace ShaderStudio
         private float CameraDeltaPitch = 0;
         private float CameraDeltaYaw = 0;
 
-        private float DeltaTime = 0.17f;//60 fps
+        private float DeltaTime = 0.017f;//60 fps
 
         public Editor()
         {
@@ -57,13 +55,16 @@ namespace ShaderStudio
 
             Console.WriteLine(MESSAGE_GL_CONTEXT_CREATED);
 
-            DefaultCam = Camera.Default;
             ShadersManager.Instance.LoadShaders();
 
             quad1 = new Quad();
+            quad1.Name = "QUAD1";
             cube1 = new Cube();
+            quad1.Name = "CUBE1";
             cube1.Position = new XNA.Vector3(0, 1.5f, 0);
-            sceneGrid = new Grid();
+
+            Scene.Instance.AddSceneObject(quad1);
+            Scene.Instance.AddSceneObject(cube1);
 
         }
         private void GLCanvas_ContextDestroying(object sender, GlControlEventArgs e)
@@ -77,13 +78,8 @@ namespace ShaderStudio
             Gl.VB.Viewport(0, 0, GLCanvas.Width, GLCanvas.Height);
             Gl.VB.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            sceneGrid.Render(DefaultCam.GetViewMatrix(), DefaultCam.GetProjectionMatrix((float)GLCanvas.Width, (float)GLCanvas.Height));
-
-
-            quad1.Render(DefaultCam.GetViewMatrix(), DefaultCam.GetProjectionMatrix((float)GLCanvas.Width, (float)GLCanvas.Height));
-            cube1.Render(DefaultCam.GetViewMatrix(), DefaultCam.GetProjectionMatrix((float)GLCanvas.Width, (float)GLCanvas.Height));
-
-            cube1.Rotation *= XNA.Quaternion.CreateFromYawPitchRoll(0.005f,  0.01f,0);
+            cube1.Rotation *= XNA.Quaternion.CreateFromYawPitchRoll(0.005f, 0.01f, 0);
+            Scene.Instance.Render((float)GLCanvas.Width, (float)GLCanvas.Height);
 
         }
         #endregion
@@ -115,11 +111,12 @@ namespace ShaderStudio
             }
             else if (e.KeyCode == Keys.F3)
             {
+                /*
                 quad1.RegisteredStages.Clear();
                 quad1.RegisteredStages.Add("DefaultVertex");
                 quad1.RegisteredStages.Add("DefaultFragment");
                 quad1.Reload();
-
+                */
                 cube1.RegisteredStages.Clear();
                 cube1.RegisteredStages.Add("DefaultVertex");
                 cube1.RegisteredStages.Add("DefaultFragment");
@@ -132,27 +129,27 @@ namespace ShaderStudio
             #region CamPosition
             if (e.KeyCode == Keys.T)
             {
-                camPositionDelta += CameraMovementSpeed * DeltaTime * DefaultCam.CameraUp;
+                camPositionDelta += CameraMovementSpeed * DeltaTime *  Scene.Instance.ActiveCamera.CameraUp;
             }
             else if (e.KeyCode == Keys.G)
             {
-                camPositionDelta -= CameraMovementSpeed * DeltaTime * DefaultCam.CameraUp;
+                camPositionDelta -= CameraMovementSpeed * DeltaTime *  Scene.Instance.ActiveCamera.CameraUp;
             }
             if (e.KeyCode == Keys.W)
             {
-                camPositionDelta += CameraMovementSpeed * DeltaTime * DefaultCam.CameraFront;
+                camPositionDelta += CameraMovementSpeed * DeltaTime *  Scene.Instance.ActiveCamera.CameraFront;
             }
             else if (e.KeyCode == Keys.S)
             {
-                camPositionDelta -= CameraMovementSpeed * DeltaTime * DefaultCam.CameraFront;
+                camPositionDelta -= CameraMovementSpeed * DeltaTime *  Scene.Instance.ActiveCamera.CameraFront;
             }
             if (e.KeyCode == Keys.A)
             {
-                camPositionDelta -= XNA.Vector3.Normalize(XNA.Vector3.Cross(DefaultCam.CameraFront, DefaultCam.CameraUp)) * DeltaTime * CameraMovementSpeed;//Local
+                camPositionDelta -= XNA.Vector3.Normalize(XNA.Vector3.Cross( Scene.Instance.ActiveCamera.CameraFront,  Scene.Instance.ActiveCamera.CameraUp)) * DeltaTime * CameraMovementSpeed;//Local
             }
             else if (e.KeyCode == Keys.D)
             {
-                camPositionDelta += XNA.Vector3.Normalize(XNA.Vector3.Cross(DefaultCam.CameraFront, DefaultCam.CameraUp)) * DeltaTime * CameraMovementSpeed;
+                camPositionDelta += XNA.Vector3.Normalize(XNA.Vector3.Cross( Scene.Instance.ActiveCamera.CameraFront,  Scene.Instance.ActiveCamera.CameraUp)) * DeltaTime * CameraMovementSpeed;
             }
             #endregion
             #region CamRotation
@@ -180,8 +177,9 @@ namespace ShaderStudio
             XNA.Quaternion q = XNA.Quaternion.CreateFromYawPitchRoll(CameraDeltaYaw, CameraDeltaPitch, 0);
             #endregion
 
-            DefaultCam.Position += camPositionDelta;
-            DefaultCam.CameraFront = XNA.Vector3.Normalize(XNA.Vector3.Transform(DefaultCam.CameraFront, q));
+
+            Scene.Instance.ActiveCamera.Position += camPositionDelta;
+            Scene.Instance.ActiveCamera.CameraFront = XNA.Vector3.Normalize(XNA.Vector3.Transform( Scene.Instance.ActiveCamera.CameraFront, q));
         }
     }
 }
