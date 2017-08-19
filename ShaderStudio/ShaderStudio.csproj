@@ -67,6 +67,7 @@
     <Compile Include="Core\Camera.cs" />
     <Compile Include="Core\ImageTexture.cs" />
     <Compile Include="Core\Scene.cs" />
+    <Compile Include="Core\TimeManager.cs" />
     <Compile Include="Core\Utils.cs" />
     <Compile Include="Editor.cs">
       <SubType>Form</SubType>

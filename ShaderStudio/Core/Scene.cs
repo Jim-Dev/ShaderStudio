@@ -18,6 +18,8 @@ namespace ShaderStudio.Core
 
         private int activeObjectIndex;
 
+        private float deltaTime;
+        private float lastFrameTime;
         public SceneObject ActiveObject
         {
             get { return GetSceneObjectByIndex(this.activeObjectIndex); }
@@ -36,12 +38,16 @@ namespace ShaderStudio.Core
             }
         }
 
+        public float DeltaTime
+        {
+            get { return this.deltaTime; }
+        }
 
         private static volatile Scene instance;
         private static object syncRoot = new Object();
 
 
-        public static Scene Instance
+        public static Scene CurrentScene
         {
             get
             {
@@ -62,17 +68,23 @@ namespace ShaderStudio.Core
         public Scene()
         {
 
-
             SceneObjects = new Dictionary<string, SceneObject>();
             gridFloor = new Grid();
         }
 
         public void Render(float SceneWidth, float SceneHeight)
         {
-            gridFloor.Render(Instance.ActiveCamera.GetViewMatrix(), Instance.ActiveCamera.GetProjectionMatrix(SceneWidth, SceneHeight));
+            if (!TimeManager.Instance.IsStarted)
+                TimeManager.Instance.Start();
+
+            float currentFrame = TimeManager.Instance.GetElapsedSeconds(); //Delta time calculation - refactor
+            CurrentScene.deltaTime = currentFrame - lastFrameTime;
+            lastFrameTime = currentFrame;
+
+            gridFloor.Render(CurrentScene.ActiveCamera.GetViewMatrix(), CurrentScene.ActiveCamera.GetProjectionMatrix(SceneWidth, SceneHeight));
             foreach (Renderable renderObj in GetAllRenderables())
             {
-                renderObj.Render(Instance.ActiveCamera.GetViewMatrix(), Instance.ActiveCamera.GetProjectionMatrix(SceneWidth, SceneHeight));
+                renderObj.Render(CurrentScene.ActiveCamera.GetViewMatrix(), CurrentScene.ActiveCamera.GetProjectionMatrix(SceneWidth, SceneHeight));
             }
         }
 
