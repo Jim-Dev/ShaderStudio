@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.GLCanvas = new OpenGL.GlControl();
+            this.fswCurrentShaderWatcher = new System.IO.FileSystemWatcher();
+            ((System.ComponentModel.ISupportInitialize)(this.fswCurrentShaderWatcher)).BeginInit();
             this.SuspendLayout();
             // 
             // GLCanvas
@@ -49,6 +51,14 @@
             this.GLCanvas.Render += new System.EventHandler<OpenGL.GlControlEventArgs>(this.GLCanvas_Render);
             this.GLCanvas.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GLCanvas_KeyDown);
             // 
+            // fswCurrentShaderWatcher
+            // 
+            this.fswCurrentShaderWatcher.EnableRaisingEvents = true;
+            this.fswCurrentShaderWatcher.Filter = "Current*";
+            this.fswCurrentShaderWatcher.Path = "Resources\\Shaders";
+            this.fswCurrentShaderWatcher.SynchronizingObject = this;
+            this.fswCurrentShaderWatcher.Changed += new System.IO.FileSystemEventHandler(this.FVertexWatcher_Changed);
+            // 
             // Editor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -59,6 +69,7 @@
             this.ForeColor = System.Drawing.Color.White;
             this.Name = "Editor";
             this.Text = "ShaderStudio - Editor";
+            ((System.ComponentModel.ISupportInitialize)(this.fswCurrentShaderWatcher)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -66,6 +77,7 @@
         #endregion
 
         private OpenGL.GlControl GLCanvas;
+        private System.IO.FileSystemWatcher fswCurrentShaderWatcher;
     }
 }
 

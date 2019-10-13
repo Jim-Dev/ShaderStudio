@@ -127,9 +127,34 @@ namespace ShaderStudio.Core
 
         public static ShaderStage LoadFromFile(string fileName, ShaderType shaderType)
         {
+          
             string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),ShadersManager.SHADERS_FOLDER, fileName);
+
+            
+
             if (File.Exists(path))
             {
+
+                var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using (var sr = new StreamReader(fs))
+                {
+                    // etc...
+                    string[] fileContent = sr.ReadToEnd().Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                    for (int i = 0; i < fileContent.Length; i++)
+                    {
+                        fileContent[i] += Environment.NewLine;
+                    }
+
+                    string shaderName = Path.GetFileNameWithoutExtension(fileName);
+                    ShaderStage output = new ShaderStage(shaderType, shaderName);
+
+                    output.ShaderSource = fileContent;
+                    output.CompileShader();
+
+
+                    return output;
+                }
+                /*
                 string[] fileContent = File.ReadAllLines(path);
 
                 for (int i = 0; i < fileContent.Length; i++)
@@ -145,6 +170,7 @@ namespace ShaderStudio.Core
 
 
                 return output;
+                */
             }
             else return null;
         }

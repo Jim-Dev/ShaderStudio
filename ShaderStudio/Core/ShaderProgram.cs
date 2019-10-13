@@ -71,6 +71,8 @@ namespace ShaderStudio.Core
                 {
                     AttachShader(tmpShader);
                 }
+                else
+                    Console.WriteLine(tmpShader.InfoLog);
             }
             LinkProgram();
             //Delete tmpShader somehow

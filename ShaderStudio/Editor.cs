@@ -15,10 +15,15 @@ using OpenGL;
 using ShaderStudio.Core;
 using ShaderStudio.Objects.Primitives;
 
+using System.IO;
+
 namespace ShaderStudio
 {
     public partial class Editor : Form
     {
+        private object fsw_lock = new object();
+        private bool isWatcherProcessingFile = false;
+
         #region Constants
         public const string MESSAGE_GL_CONTEXT_CREATED = "OpenGL Context Created";
         public const string MESSAGE_GL_CONTEXT_DESTROYED = "OpenGL Context Destroyed";
@@ -32,7 +37,6 @@ namespace ShaderStudio
 
         private float CameraDeltaPitch = 0;
         private float CameraDeltaYaw = 0;
-
 
         public Editor()
         {
@@ -54,7 +58,7 @@ namespace ShaderStudio
 
             Console.WriteLine(MESSAGE_GL_CONTEXT_CREATED);
 
-            ShadersManager.Instance.LoadShaders();
+            ShadersManager.Instance.ReloadShaders();
 
             quad1 = new Quad();
             quad1.Name = "QUAD1";
@@ -66,6 +70,25 @@ namespace ShaderStudio
             Scene.CurrentScene.AddSceneObject(cube1);
 
         }
+
+        private void FVertexWatcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            if (!isWatcherProcessingFile)
+            {
+                lock (fsw_lock)
+                {
+                    isWatcherProcessingFile = true;
+                    Console.WriteLine("FWATCHER " + e.ChangeType + e.Name);
+                    cube1.RegisteredStages.Clear();
+                    cube1.RegisteredStages.Add("CurrentVertex");
+                    cube1.RegisteredStages.Add("CurrentFragment");
+                    cube1.Reload();
+                    Console.WriteLine("FWATCHER END " + e.Name);
+                    isWatcherProcessingFile = false;
+                }
+            }
+        }
+
         private void GLCanvas_ContextDestroying(object sender, GlControlEventArgs e)
         {
             Console.WriteLine(MESSAGE_GL_CONTEXT_DESTROYED);
@@ -116,10 +139,12 @@ namespace ShaderStudio
                 quad1.RegisteredStages.Add("DefaultFragment");
                 quad1.Reload();
                 */
+               
                 cube1.RegisteredStages.Clear();
                 cube1.RegisteredStages.Add("DefaultVertex");
                 cube1.RegisteredStages.Add("DefaultFragment");
                 cube1.Reload();
+                
             }
 
 
@@ -175,7 +200,6 @@ namespace ShaderStudio
             }
             XNA.Quaternion q = XNA.Quaternion.CreateFromYawPitchRoll(CameraDeltaYaw, CameraDeltaPitch, 0);
             #endregion
-
 
             Scene.CurrentScene.ActiveCamera.Position += camPositionDelta;
             Scene.CurrentScene.ActiveCamera.CameraFront = XNA.Vector3.Normalize(XNA.Vector3.Transform( Scene.CurrentScene.ActiveCamera.CameraFront, q));

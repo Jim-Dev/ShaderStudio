@@ -20,6 +20,7 @@ namespace ShaderStudio.Core
 
         public const string SHADERS_FOLDER = "Resources/Shaders";
 
+        public const string CURRENT_SHADER_FILENAME = "Current";
 
         private Dictionary<string, ShaderStage> LoadedShaders;//ShaderName,Shader
 
@@ -49,12 +50,20 @@ namespace ShaderStudio.Core
             LoadedShaders = new Dictionary<string, ShaderStage>();
         }
 
+        private void Initialize()
+        {
+            if (!File.Exists(Path.Combine(Utils.GetRelativePathString(SHADERS_FOLDER), CURRENT_SHADER_FILENAME + VERTEX_SHADER_EXTENSION)))
+            {
+
+            }
+        }
+
         public void Reset()
         {
             LoadedShaders.Clear();
         }
 
-        public void LoadShaders()
+        public void ReloadShaders()
         {
             if (Directory.Exists(Utils.GetRelativePathString(SHADERS_FOLDER)))
             {
@@ -188,11 +197,10 @@ namespace ShaderStudio.Core
 
         public ShaderProgram BuildShaderProgram(string[] shaderNames)
         {
-            LoadShaders();
+            ReloadShaders();
             ShaderProgram output = new ShaderProgram(shaderNames);
 
             return output;
         }
-
     }
 }

@@ -77,7 +77,6 @@ namespace ShaderStudio.Objects.Primitives
         {
 
             if (RegisteredStages.Count == 0)
-
                 shaderProgram = ShadersManager.Instance.GetDefaultShader();
             else
                 shaderProgram = ShadersManager.Instance.BuildShaderProgram(RegisteredStages.ToArray());
