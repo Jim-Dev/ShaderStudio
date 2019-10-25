@@ -94,10 +94,13 @@ namespace ShaderStudio.Objects.Primitives
 
         public override void Render(XNA.Matrix ViewMatrix, XNA.Matrix ProjectionMatrix)
         {
-            base.Render(ViewMatrix, ProjectionMatrix);
-            Gl.DrawElements(PrimitiveType.Triangles, 36, DrawElementsType.UnsignedInt, IntPtr.Zero);
+            if (ShaderProgram!=null)
+            {
+                base.Render(ViewMatrix, ProjectionMatrix);
+                Gl.DrawElements(PrimitiveType.Triangles, 36, DrawElementsType.UnsignedInt, IntPtr.Zero);
 
-            Gl.BindVertexArray(0);
+                Gl.BindVertexArray(0);
+            }
         }
     }
 }

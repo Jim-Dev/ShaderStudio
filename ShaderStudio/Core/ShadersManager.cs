@@ -24,9 +24,17 @@ namespace ShaderStudio.Core
 
         private Dictionary<string, ShaderStage> LoadedShaders;//ShaderName,Shader
 
+        public event EventHandler CompilationError;
+        public event EventHandler CompilationSuccess;
+
         private static volatile ShadersManager instance;
         private static object syncRoot = new Object();
 
+        private readonly StringBuilder infoLog;
+        public string InfoLog
+        {
+            get { return this.infoLog.ToString(); }
+        }
 
         public static ShadersManager Instance
         {
@@ -48,6 +56,7 @@ namespace ShaderStudio.Core
         public ShadersManager()
         {
             LoadedShaders = new Dictionary<string, ShaderStage>();
+            infoLog = new StringBuilder();
         }
 
         private void Initialize()
@@ -199,8 +208,18 @@ namespace ShaderStudio.Core
         {
             ReloadShaders();
             ShaderProgram output = new ShaderProgram(shaderNames);
-
-            return output;
+            if (output.HasCompilationError)
+            {
+                infoLog.Clear();
+                infoLog.Append(output.InfoLog);
+                CompilationError?.Invoke(this,EventArgs.Empty);
+                return null;
+            }
+            else
+            {
+                CompilationSuccess?.Invoke(this, EventArgs.Empty);
+                return output;
+            }
         }
     }
 }

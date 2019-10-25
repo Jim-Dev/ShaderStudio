@@ -11,6 +11,15 @@ namespace ShaderStudio.Core
 {
     public class ShaderProgram:ShaderBase
     {
+
+        private bool hasCompilationError = false;
+
+        public bool HasCompilationError
+        {
+            get { return hasCompilationError; }
+            private set { this.hasCompilationError =  value; }
+        }
+
         public enum eMatrixType
         {
             Matrix2,
@@ -49,12 +58,14 @@ namespace ShaderStudio.Core
 
         public ShaderProgram()
         {
+            infoLog = new StringBuilder();
             registeredShaders = new List<string>();
             BuildShaderProgram();
         }
 
         public ShaderProgram(string[] shaderStageNames)
         {
+            infoLog = new StringBuilder();
             registeredShaders = new List<string>();
             registeredShaders.AddRange(shaderStageNames);
             BuildShaderProgram();
@@ -72,7 +83,11 @@ namespace ShaderStudio.Core
                     AttachShader(tmpShader);
                 }
                 else
-                    Console.WriteLine(tmpShader.InfoLog);
+                {
+                    HasCompilationError = true;
+                    infoLog.Clear();
+                    infoLog.Append(tmpShader.InfoLog);
+                }
             }
             LinkProgram();
             //Delete tmpShader somehow

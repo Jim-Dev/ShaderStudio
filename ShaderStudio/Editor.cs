@@ -41,6 +41,14 @@ namespace ShaderStudio
         public Editor()
         {
             InitializeComponent();
+            ShadersManager.Instance.CompilationError += Instance_CompilationError;
+        }
+
+        private void Instance_CompilationError(object sender, EventArgs e)
+        {
+            txbOutput.Text += ShadersManager.Instance.InfoLog;
+            txbOutput2.Text += ShadersManager.Instance.InfoLog;
+            this.Invalidate(true);
         }
 
         #region OpenGL Canvas
@@ -75,16 +83,22 @@ namespace ShaderStudio
         {
             if (!isWatcherProcessingFile)
             {
+                isWatcherProcessingFile = true;
                 lock (fsw_lock)
                 {
-                    isWatcherProcessingFile = true;
-                    Console.WriteLine("FWATCHER " + e.ChangeType + e.Name);
                     cube1.RegisteredStages.Clear();
                     cube1.RegisteredStages.Add("CurrentVertex");
                     cube1.RegisteredStages.Add("CurrentFragment");
                     cube1.Reload();
-                    Console.WriteLine("FWATCHER END " + e.Name);
-                    isWatcherProcessingFile = false;
+
+                    //-- Ugly hack to avoid FileSystemWatcher be called twice
+                    System.Timers.Timer watcherResetTimer = new System.Timers.Timer(1000) { AutoReset = false };
+                    watcherResetTimer.Elapsed += (timerElapsedSender, timerElapsedArgs) =>
+                    {
+                        isWatcherProcessingFile = false;
+                    };
+                    watcherResetTimer.Start();
+                    //--
                 }
             }
         }
@@ -102,7 +116,6 @@ namespace ShaderStudio
 
             cube1.Rotation *= XNA.Quaternion.CreateFromYawPitchRoll(0.005f, 0.01f, 0);
             Scene.CurrentScene.Render((float)GLCanvas.Width, (float)GLCanvas.Height);
-
         }
         #endregion
 
@@ -203,6 +216,11 @@ namespace ShaderStudio
 
             Scene.CurrentScene.ActiveCamera.Position += camPositionDelta;
             Scene.CurrentScene.ActiveCamera.CameraFront = XNA.Vector3.Normalize(XNA.Vector3.Transform( Scene.CurrentScene.ActiveCamera.CameraFront, q));
+        }
+
+        private void btnClearOutput_Click(object sender, EventArgs e)
+        {
+            txbOutput.Text = string.Empty;
         }
     }
 }

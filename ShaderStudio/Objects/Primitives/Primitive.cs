@@ -39,11 +39,12 @@ namespace ShaderStudio.Objects.Primitives
 
         public override void Render(XNA.Matrix ViewMatrix, XNA.Matrix ProjectionMatrix)
         {
-            ShaderProgram.Use();
-            Gl.BindVertexArray(VAO);
-
-
-            SetMVP(ViewMatrix, ProjectionMatrix);
+            if (ShaderProgram != null)
+            {
+                ShaderProgram.Use();
+                Gl.BindVertexArray(VAO);
+                SetMVP(ViewMatrix, ProjectionMatrix);
+            }
         }
 
         public override void SetBuffers()
@@ -79,7 +80,9 @@ namespace ShaderStudio.Objects.Primitives
             if (RegisteredStages.Count == 0)
                 shaderProgram = ShadersManager.Instance.GetDefaultShader();
             else
+            {
                 shaderProgram = ShadersManager.Instance.BuildShaderProgram(RegisteredStages.ToArray());
+            }
 
             if (mainTextureName == string.Empty)
                 mainTextureName = DEFAULT_TEXTURE_MAIN_NAME;
@@ -101,9 +104,12 @@ namespace ShaderStudio.Objects.Primitives
 
         public override void SetProgramParameters()
         {
-            ShaderProgram.Use();
-            ShaderProgram.SetInt("texBackground", 0);
-            ShaderProgram.SetInt("texForeground", 1);
+            if (ShaderProgram != null)
+            {
+                ShaderProgram.Use();
+                ShaderProgram.SetInt("texBackground", 0);
+                ShaderProgram.SetInt("texForeground", 1);
+            }
         }
 
     }
