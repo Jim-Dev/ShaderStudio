@@ -29,7 +29,6 @@ namespace ShaderStudio
         public const string MESSAGE_GL_CONTEXT_DESTROYED = "OpenGL Context Destroyed";
         #endregion
 
-        Quad quad1;
         Cube cube1;
 
         private float CameraMovementSpeed = 0.75f;
@@ -42,12 +41,34 @@ namespace ShaderStudio
         {
             InitializeComponent();
             ShadersManager.Instance.CompilationError += Instance_CompilationError;
+            ShadersManager.Instance.CompilationSuccess += Instance_CompilationSuccess;
+        }
+
+        private void Instance_CompilationSuccess(object sender, EventArgs e)
+        {
+            StringBuilder sBuilder = new StringBuilder(ShadersManager.Instance.InfoLog);
+            if (cube1!=null && cube1.ShaderProgram!=null)
+            {
+                sBuilder.AppendLine("Attributes:");
+                foreach (string shaderAttribute in cube1.ShaderProgram.GetAttributeNames())
+                {
+                    sBuilder.AppendLine("\t" + shaderAttribute);
+                }
+                sBuilder.AppendLine("Uniforms:");
+                foreach (string shaderUniforms in cube1.ShaderProgram.GetUniformNames())
+                {
+                    sBuilder.AppendLine("\t"+shaderUniforms);
+                }
+            }
+           
+            txbOutput.Text = sBuilder.ToString();
+            sBuilder.Clear();
+            this.Invalidate(true);
         }
 
         private void Instance_CompilationError(object sender, EventArgs e)
         {
-            txbOutput.Text += ShadersManager.Instance.InfoLog;
-            txbOutput2.Text += ShadersManager.Instance.InfoLog;
+            txbOutput.Text = ShadersManager.Instance.InfoLog;
             this.Invalidate(true);
         }
 
@@ -68,14 +89,15 @@ namespace ShaderStudio
 
             ShadersManager.Instance.ReloadShaders();
 
-            quad1 = new Quad();
-            quad1.Name = "QUAD1";
             cube1 = new Cube();
-            quad1.Name = "CUBE1";
-            cube1.Position = new XNA.Vector3(0, 1.5f, 0);
+            cube1.Name = "CUBE1";
+            cube1.Scale = new XNA.Vector3(2, 2, 2);
+            //cube1.Position = new XNA.Vector3(0, 1.5f, 0);
 
-            Scene.CurrentScene.AddSceneObject(quad1);
+            //Scene.CurrentScene.AddSceneObject(quad1);
             Scene.CurrentScene.AddSceneObject(cube1);
+            Scene.CurrentScene.ActiveCamera.Position += new XNA.Vector3(0, 1, 0);
+
 
         }
 
@@ -116,51 +138,13 @@ namespace ShaderStudio
 
             cube1.Rotation *= XNA.Quaternion.CreateFromYawPitchRoll(0.005f, 0.01f, 0);
             Scene.CurrentScene.Render((float)GLCanvas.Width, (float)GLCanvas.Height);
+
+            cube1?.ShaderProgram?.SetFloat("Time", Scene.CurrentScene.TotalTime);
         }
         #endregion
 
         private void GLCanvas_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.F1)
-            {
-                quad1.RegisteredStages.Clear();
-                quad1.Reload();
-
-                cube1.RegisteredStages.Clear();
-                cube1.Reload();
-
-
-            }
-            else if (e.KeyCode == Keys.F2)
-            {
-                quad1.RegisteredStages.Clear();
-                quad1.RegisteredStages.Add("VertexColorVertex");
-                quad1.RegisteredStages.Add("VertexColorFragment");
-                quad1.Reload();
-
-
-                cube1.RegisteredStages.Clear();
-                cube1.RegisteredStages.Add("VertexColorVertex");
-                cube1.RegisteredStages.Add("VertexColorFragment");
-                cube1.Reload();
-            }
-            else if (e.KeyCode == Keys.F3)
-            {
-                /*
-                quad1.RegisteredStages.Clear();
-                quad1.RegisteredStages.Add("DefaultVertex");
-                quad1.RegisteredStages.Add("DefaultFragment");
-                quad1.Reload();
-                */
-               
-                cube1.RegisteredStages.Clear();
-                cube1.RegisteredStages.Add("DefaultVertex");
-                cube1.RegisteredStages.Add("DefaultFragment");
-                cube1.Reload();
-                
-            }
-
-
             XNA.Vector3 camPositionDelta = XNA.Vector3.Zero;
 
             #region CamPosition

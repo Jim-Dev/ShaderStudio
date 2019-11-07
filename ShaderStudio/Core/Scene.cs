@@ -20,6 +20,8 @@ namespace ShaderStudio.Core
 
         private float deltaTime;
         private float lastFrameTime;
+        private float totalTime;
+
         public SceneObject ActiveObject
         {
             get { return GetSceneObjectByIndex(this.activeObjectIndex); }
@@ -42,10 +44,13 @@ namespace ShaderStudio.Core
         {
             get { return this.deltaTime; }
         }
-
+        public float TotalTime
+        {
+            get { return this.totalTime; }
+            private set { this.totalTime = value; }
+        }
         private static volatile Scene instance;
         private static object syncRoot = new Object();
-
 
         public static Scene CurrentScene
         {
@@ -77,9 +82,10 @@ namespace ShaderStudio.Core
             if (!TimeManager.Instance.IsStarted)
                 TimeManager.Instance.Start();
 
-            float currentFrame = TimeManager.Instance.GetElapsedSeconds(); //Delta time calculation - refactor
-            CurrentScene.deltaTime = currentFrame - lastFrameTime;
-            lastFrameTime = currentFrame;
+            TotalTime = TimeManager.Instance.GetElapsedSeconds(); //Delta time calculation - refactor
+
+            CurrentScene.deltaTime = TotalTime - lastFrameTime;
+            lastFrameTime = TotalTime;
 
             gridFloor.Render(CurrentScene.ActiveCamera.GetViewMatrix(), CurrentScene.ActiveCamera.GetProjectionMatrix(SceneWidth, SceneHeight));
             foreach (Renderable renderObj in GetAllRenderables())

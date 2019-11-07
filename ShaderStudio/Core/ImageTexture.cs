@@ -19,7 +19,31 @@ namespace ShaderStudio.Core
 
         private Bitmap imageBitmap;
 
-                    public const string TEXTURES_FOLDER = "Resources/Textures";
+        public const string TEXTURES_FOLDER = "Resources/Textures";
+        public const string DEFAULT_TEXTURE_FILENAME_TEMPLATE = "TEXTURE{0}.png";
+        public const string DEFAULT_TEXTURE_PATH_TEMPLATE = TEXTURES_FOLDER + "/"+DEFAULT_TEXTURE_FILENAME_TEMPLATE;
+        public const string DEFAULT_TEXTURE_SHADER_PARAM_TEMPLATE = "_TEX{0}";
+
+        public static readonly TextureUnit[] TEXTURE_UNITS_MAPPING = new TextureUnit[]
+        {
+            TextureUnit.Texture0,
+            TextureUnit.Texture1,
+            TextureUnit.Texture2,
+            TextureUnit.Texture3,
+            TextureUnit.Texture4,
+            TextureUnit.Texture5,
+            TextureUnit.Texture6,
+            TextureUnit.Texture7,
+            TextureUnit.Texture8,
+            TextureUnit.Texture9,
+            TextureUnit.Texture10,
+            TextureUnit.Texture11,
+            TextureUnit.Texture12,
+            TextureUnit.Texture13,
+            TextureUnit.Texture14,
+            TextureUnit.Texture15
+        };
+
         public void Lock()
         {
             bmpData =
