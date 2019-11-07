@@ -1,4 +1,5 @@
 ﻿using ShaderStudio.Objects;
+using ShaderStudio.Objects.Lights;
 using ShaderStudio.Objects.Primitives;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace ShaderStudio.Core
 
         public event EventHandler<EventArgs> OnActiveObjectChanged;
 
+        public Light AmbientLight = new Light();
 
         public Camera ActiveCamera
         {
@@ -75,6 +77,8 @@ namespace ShaderStudio.Core
 
             SceneObjects = new Dictionary<string, SceneObject>();
             gridFloor = new Grid();
+            AmbientLight.Position = new Microsoft.Xna.Framework.Vector3(0f, 2.5f, 0f);
+            AddSceneObject(AmbientLight);
         }
 
         public void Render(float SceneWidth, float SceneHeight)
@@ -90,7 +94,12 @@ namespace ShaderStudio.Core
             gridFloor.Render(CurrentScene.ActiveCamera.GetViewMatrix(), CurrentScene.ActiveCamera.GetProjectionMatrix(SceneWidth, SceneHeight));
             foreach (Renderable renderObj in GetAllRenderables())
             {
+
                 renderObj.Render(CurrentScene.ActiveCamera.GetViewMatrix(), CurrentScene.ActiveCamera.GetProjectionMatrix(SceneWidth, SceneHeight));
+
+                renderObj?.ShaderProgram?.SetVector("L_AmbientColor", AmbientLight.LightColor);
+                renderObj?.ShaderProgram?.SetFloat("L_AmbientIntensity", AmbientLight.LightIntensity);
+
             }
         }
 

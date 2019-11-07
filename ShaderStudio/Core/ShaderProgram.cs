@@ -9,7 +9,7 @@ using XNA = Microsoft.Xna.Framework;
 
 namespace ShaderStudio.Core
 {
-    public class ShaderProgram:ShaderBase
+    public class ShaderProgram : ShaderBase
     {
 
         private bool hasCompilationError = false;
@@ -17,7 +17,7 @@ namespace ShaderStudio.Core
         public bool HasCompilationError
         {
             get { return hasCompilationError; }
-            private set { this.hasCompilationError =  value; }
+            private set { this.hasCompilationError = value; }
         }
 
         public enum eMatrixType
@@ -154,7 +154,22 @@ namespace ShaderStudio.Core
         {
             Gl.Uniform4(Gl.GetUniformLocation(ProgramID, name), valueX, valueY, valueZ, valueW);
         }
-
+        public void SetVector(string name, XNA.Vector2 vector)
+        {
+            SetVector(name, vector.X, vector.Y);
+        }
+        public void SetVector(string name, XNA.Vector3 vector)
+        {
+            SetVector(name, vector.X, vector.Y, vector.Z);
+        }
+        public void SetVector(string name, XNA.Vector4 vector)
+        {
+            SetVector(name, vector.X, vector.Y, vector.Z, vector.W);
+        }
+        public void SetVector(string name, XNA.Color color)
+        {
+            SetVector(name, color.ToVector4());
+        }
         public void SetMatrix(string name, int count, bool transpose, float[] values, eMatrixType matrixType)
         {
             switch (matrixType)

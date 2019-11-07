@@ -16,6 +16,7 @@ using ShaderStudio.Core;
 using ShaderStudio.Objects.Primitives;
 
 using System.IO;
+using ShaderStudio.Objects.Lights;
 
 namespace ShaderStudio
 {
@@ -91,11 +92,11 @@ namespace ShaderStudio
 
             cube1 = new Cube();
             cube1.Name = "CUBE1";
-            cube1.Scale = new XNA.Vector3(2, 2, 2);
-            //cube1.Position = new XNA.Vector3(0, 1.5f, 0);
+            cube1.Scale = new XNA.Vector3(1.5f, 1.5f, 1.5f);
 
             //Scene.CurrentScene.AddSceneObject(quad1);
             Scene.CurrentScene.AddSceneObject(cube1);
+            Scene.CurrentScene.AmbientLight.LightColor = XNA.Color.Yellow;
             Scene.CurrentScene.ActiveCamera.Position += new XNA.Vector3(0, 1, 0);
 
 
@@ -140,9 +141,12 @@ namespace ShaderStudio
             Gl.VB.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             cube1.Rotation *= XNA.Quaternion.CreateFromYawPitchRoll(0.005f, 0.01f, 0);
-            Scene.CurrentScene.Render((float)GLCanvas.Width, (float)GLCanvas.Height);
 
             cube1?.ShaderProgram?.SetFloat("Time", Scene.CurrentScene.TotalTime);
+            Scene.CurrentScene.AmbientLight.LightIntensity = (float)Math.Abs(Math.Sin((double)Scene.CurrentScene.TotalTime));
+            Scene.CurrentScene.Render((float)GLCanvas.Width, (float)GLCanvas.Height);
+
+
         }
         #endregion
 

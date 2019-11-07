@@ -79,6 +79,7 @@
     <Compile Include="Core\ShaderProgram.cs" />
     <Compile Include="Core\ShadersManager.cs" />
     <Compile Include="Core\ShaderStage.cs" />
+    <Compile Include="Objects\Lights\Light.cs" />
     <Compile Include="Objects\Primitives\Cube.cs" />
     <Compile Include="Objects\Primitives\Grid.cs" />
     <Compile Include="Objects\Primitives\Primitive.cs" />
@@ -126,6 +127,21 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Shaders\VertexColorVertex.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Shaders\LightVertex.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Shaders\LightFragment.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Shaders\LitFragment.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Shaders\LatestFragment.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Shaders\LatestVertex.vert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
