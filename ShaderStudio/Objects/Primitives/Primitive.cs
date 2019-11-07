@@ -15,8 +15,7 @@ namespace ShaderStudio.Objects.Primitives
     public class Primitive : Renderable
     {
         private readonly object lock_object = new object();
-        public const string DEFAULT_TEXTURE_MAIN_NAME = "vertical.png";
-        public const string DEFAULT_TEXTURE_SECONDARY_NAME = "horizontal.png";
+        public const string DEFAULT_TEXTURE_NAME = "128-128-128.png";
         public const int DEFAULT_TEXTURE_SLOT_MAX = 8;
         public virtual float[] Vertices { get; }
         public virtual uint[] Indices { get; }
@@ -92,7 +91,7 @@ namespace ShaderStudio.Objects.Primitives
                 string texturePath = string.Format(ImageTexture.DEFAULT_TEXTURE_PATH_TEMPLATE, i);
 
                 if (!File.Exists(texturePath))
-                    File.Copy("Resources/Textures/128-128-128.png", texturePath);
+                    File.Copy(Path.Combine(ImageTexture.TEXTURES_FOLDER, DEFAULT_TEXTURE_NAME),texturePath);
             }
             
             ImageTexture tex0 = new ImageTexture(string.Format(ImageTexture.DEFAULT_TEXTURE_FILENAME_TEMPLATE, 0), RotateFlipType.RotateNoneFlipNone);

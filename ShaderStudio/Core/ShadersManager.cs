@@ -21,6 +21,7 @@ namespace ShaderStudio.Core
         public const string SHADERS_FOLDER = "Resources/Shaders";
 
         public const string CURRENT_SHADER_FILENAME = "Current";
+        public const string DEFAULT_SHADER_FILENAME = "Default";
 
         private Dictionary<string, ShaderStage> LoadedShaders;//ShaderName,Shader
 
@@ -56,15 +57,22 @@ namespace ShaderStudio.Core
         public ShadersManager()
         {
             LoadedShaders = new Dictionary<string, ShaderStage>();
+            Initialize();
             infoLog = new StringBuilder();
         }
 
         private void Initialize()
         {
-            if (!File.Exists(Path.Combine(Utils.GetRelativePathString(SHADERS_FOLDER), CURRENT_SHADER_FILENAME + VERTEX_SHADER_EXTENSION)))
-            {
+            string currentVertPath = Path.Combine(SHADERS_FOLDER, CURRENT_SHADER_FILENAME + "Vertex" + VERTEX_SHADER_EXTENSION);
+            string currentFragPath = Path.Combine(SHADERS_FOLDER, CURRENT_SHADER_FILENAME + "Fragment" + FRAGMENT_SHADER_EXTENSION);
 
-            }
+            if (!File.Exists(currentVertPath))
+                File.Copy(Path.Combine(SHADERS_FOLDER, DEFAULT_SHADER_FILENAME + "Vertex" + VERTEX_SHADER_EXTENSION),
+                    Path.Combine(SHADERS_FOLDER, CURRENT_SHADER_FILENAME + "Vertex" + VERTEX_SHADER_EXTENSION));
+
+            if (!File.Exists(currentFragPath))
+                File.Copy(Path.Combine(SHADERS_FOLDER, DEFAULT_SHADER_FILENAME + "Fragment" + FRAGMENT_SHADER_EXTENSION),
+                    Path.Combine(SHADERS_FOLDER, CURRENT_SHADER_FILENAME + "Fragment" + FRAGMENT_SHADER_EXTENSION));
         }
 
         public void Reset()

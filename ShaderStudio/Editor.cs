@@ -108,19 +108,22 @@ namespace ShaderStudio
                 isWatcherProcessingFile = true;
                 lock (fsw_lock)
                 {
-                    cube1.RegisteredStages.Clear();
-                    cube1.RegisteredStages.Add("CurrentVertex");
-                    cube1.RegisteredStages.Add("CurrentFragment");
-                    cube1.Reload();
-
-                    //-- Ugly hack to avoid FileSystemWatcher be called twice
-                    System.Timers.Timer watcherResetTimer = new System.Timers.Timer(1000) { AutoReset = false };
-                    watcherResetTimer.Elapsed += (timerElapsedSender, timerElapsedArgs) =>
+                    if (cube1 !=null)
                     {
-                        isWatcherProcessingFile = false;
-                    };
-                    watcherResetTimer.Start();
-                    //--
+                        cube1.RegisteredStages.Clear();
+                        cube1.RegisteredStages.Add("CurrentVertex");
+                        cube1.RegisteredStages.Add("CurrentFragment");
+                        cube1.Reload();
+
+                        //-- Ugly hack to avoid FileSystemWatcher be called twice
+                        System.Timers.Timer watcherResetTimer = new System.Timers.Timer(1000) { AutoReset = false };
+                        watcherResetTimer.Elapsed += (timerElapsedSender, timerElapsedArgs) =>
+                        {
+                            isWatcherProcessingFile = false;
+                        };
+                        watcherResetTimer.Start();
+                        //--
+                    }
                 }
             }
         }
