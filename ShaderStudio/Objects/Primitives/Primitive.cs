@@ -30,12 +30,14 @@ namespace ShaderStudio.Objects.Primitives
            : base(shaderProgram)
         {
             ObjectType = eObjectType.Entity;
+            VertexStride = 11;
         }
 
         public Primitive()
            : base()
         {
             ObjectType = eObjectType.Entity;
+            VertexStride = 11;
         }
 
         public override void Render(XNA.Matrix ViewMatrix, XNA.Matrix ProjectionMatrix)
@@ -62,14 +64,17 @@ namespace ShaderStudio.Objects.Primitives
             Gl.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
             Gl.BufferData(BufferTarget.ElementArrayBuffer, ((uint)Indices.Length) * sizeof(uint), Indices, BufferUsage.StaticDraw);
 
-            Gl.VertexAttribPointer(0, 3, VertexAttribType.Float, false, 8 * sizeof(float), IntPtr.Zero);
+            Gl.VertexAttribPointer(0, 3, VertexAttribType.Float, false, (int)VertexStride * sizeof(float), IntPtr.Zero);
             Gl.EnableVertexAttribArray(0);
 
-            Gl.VertexAttribPointer(1, 3, VertexAttribType.Float, false, 8 * sizeof(float), IntPtr.Zero + 3 * sizeof(float));
+            Gl.VertexAttribPointer(1, 3, VertexAttribType.Float, false, (int)VertexStride * sizeof(float), IntPtr.Zero + 3 * sizeof(float));
             Gl.EnableVertexAttribArray(1);
 
-            Gl.VertexAttribPointer(2, 2, VertexAttribType.Float, false, 8 * sizeof(float), IntPtr.Zero + 6 * sizeof(float));
+            Gl.VertexAttribPointer(2, 3, VertexAttribType.Float, false, (int)VertexStride * sizeof(float), IntPtr.Zero + 6 * sizeof(float));
             Gl.EnableVertexAttribArray(2);
+
+            Gl.VertexAttribPointer(3, 2, VertexAttribType.Float, false, (int)VertexStride * sizeof(float), IntPtr.Zero + 9 * sizeof(float));
+            Gl.EnableVertexAttribArray(3);
 
             Gl.BindBuffer(BufferTarget.ArrayBuffer, 0);
             Gl.BindVertexArray(0);

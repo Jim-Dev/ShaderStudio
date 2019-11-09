@@ -7,14 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using XNA = Microsoft.Xna.Framework;
+
 namespace ShaderStudio.Core
 {
     public class Scene
     {
-
-
         private Camera activeCamera;
         Dictionary<string, SceneObject> SceneObjects;//ObjectName,Object
+
         private Grid gridFloor;
 
         private int activeObjectIndex;
@@ -74,11 +75,14 @@ namespace ShaderStudio.Core
 
         public Scene()
         {
-
             SceneObjects = new Dictionary<string, SceneObject>();
             gridFloor = new Grid();
-            AmbientLight.Position = new Microsoft.Xna.Framework.Vector3(0f, 2.5f, 0f);
+            AmbientLight.Position = new Microsoft.Xna.Framework.Vector3(1,1,1);
+            Light simpleLight = new Light(XNA.Color.Cyan,1f);
+            simpleLight.Position = new Microsoft.Xna.Framework.Vector3(1,2.125f, 1);
             AddSceneObject(AmbientLight);
+            AddSceneObject(simpleLight,"Light0");
+
         }
 
         public void Render(float SceneWidth, float SceneHeight)
@@ -94,11 +98,20 @@ namespace ShaderStudio.Core
             gridFloor.Render(CurrentScene.ActiveCamera.GetViewMatrix(), CurrentScene.ActiveCamera.GetProjectionMatrix(SceneWidth, SceneHeight));
             foreach (Renderable renderObj in GetAllRenderables())
             {
-
+                Light simpleLight = Scene.CurrentScene.SceneObjects["Light0"] as Light;
+                simpleLight.Position.X = 2.0f * (float)Math.Sin(TimeManager.Instance.GetElapsedSeconds() / 2);
+                simpleLight.Position.Z = 2.0f * (float)Math.Cos(TimeManager.Instance.GetElapsedSeconds() / 2);
                 renderObj.Render(CurrentScene.ActiveCamera.GetViewMatrix(), CurrentScene.ActiveCamera.GetProjectionMatrix(SceneWidth, SceneHeight));
 
-                renderObj?.ShaderProgram?.SetVector("L_AmbientColor", AmbientLight.LightColor);
-                renderObj?.ShaderProgram?.SetFloat("L_AmbientIntensity", AmbientLight.LightIntensity);
+
+                renderObj?.ShaderProgram?.SetVector(Constants.ShaderConstants.SHADER_PARAM_LIT_CAMERA_POSITION, Scene.CurrentScene.ActiveCamera.Position);
+
+                renderObj?.ShaderProgram?.SetVector(Constants.ShaderConstants.SHADER_PARAM_LIT_AMBIENT_COLOR, AmbientLight.LightColor, false);
+                renderObj?.ShaderProgram?.SetFloat(Constants.ShaderConstants.SHADER_PARAM_LIT_AMBIENT_INTENSITY, AmbientLight.LightIntensity);
+
+                renderObj?.ShaderProgram?.SetVector(Constants.ShaderConstants.SHADER_PARAM_LIT_SIMPLELIGHT_COLOR, simpleLight.LightColor, false);
+                renderObj?.ShaderProgram?.SetFloat(Constants.ShaderConstants.SHADER_PARAM_LIT_SIMPLELIGHT_INTENSITY, simpleLight.LightIntensity);
+                renderObj?.ShaderProgram?.SetVector(Constants.ShaderConstants.SHADER_PARAM_LIT_SIMPLELIGHT_POSITION, simpleLight.Position);
 
             }
         }

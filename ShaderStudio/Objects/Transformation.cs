@@ -15,18 +15,26 @@ namespace ShaderStudio.Objects
 
 
         private Matrix transformMatrix = Matrix.Identity;
+        private Matrix inverseTransformMatrix = Matrix.Identity;
 
         public Matrix TransformMatrix
         {
-            get
-            {
-                this.transformMatrix = GetTransformation();
-                return this.transformMatrix;
-            }
+            get { return this.transformMatrix; }
+            private set { this.transformMatrix = value; }
         }
-
+        public Matrix InverseTransformMatrix
+        {
+            get { return this.inverseTransformMatrix; }
+            private set { this.inverseTransformMatrix = value; }
+        }
         public Transformation()
         {
+        }
+
+        public void UpdateTransform()
+        {
+            TransformMatrix = GetTransformation();
+            this.InverseTransformMatrix = Matrix.Invert(this.transformMatrix);
         }
 
         private Matrix GetTransformation()

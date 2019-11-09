@@ -1,10 +1,10 @@
 ﻿#version 330 core
 out vec4 FragColor;
 
-uniform vec4 LightColor;
+uniform vec3 LightColor;
 uniform float LightIntensity;
 
 void main()
 {
-    FragColor = LightColor * LightIntensity; // set all 4 vector values to 1.0
+    FragColor = vec4(LightColor * LightIntensity,1); // set all 4 vector values to 1.0
 }

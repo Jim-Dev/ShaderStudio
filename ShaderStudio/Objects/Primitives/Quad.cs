@@ -12,11 +12,11 @@ namespace ShaderStudio.Objects.Primitives
     public class Quad:Primitive
     {
         float[] vertices = new float[] {
- // positions          // colors           // texture coords
-     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
-     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
-    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
-    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
+            //position          //vertex color           //normal               // texture coords
+             0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,      0.0f,  0.0f, 1.0f,     1.0f, 1.0f,   // top right
+             0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,      0.0f,  0.0f, 1.0f,     1.0f, 0.0f,   // bottom right
+            -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,      0.0f,  0.0f, 1.0f,     0.0f, 0.0f,   // bottom left
+            -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,      0.0f,  0.0f, 1.0f,     0.0f, 1.0f    // top left 
 
         };
         uint[] indices = new uint[] {  // note that we start from 0!

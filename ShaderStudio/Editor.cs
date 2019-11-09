@@ -31,6 +31,7 @@ namespace ShaderStudio
         #endregion
 
         Cube cube1;
+        Quad quad1;
 
         private float CameraMovementSpeed = 0.75f;
         private float CameraRotationSpeed = 0.75f;
@@ -94,12 +95,14 @@ namespace ShaderStudio
             cube1.Name = "CUBE1";
             cube1.Scale = new XNA.Vector3(1.5f, 1.5f, 1.5f);
 
-            //Scene.CurrentScene.AddSceneObject(quad1);
+            quad1 = new Quad();
+            quad1.Name = "QUAD";
+            quad1.Position = new XNA.Vector3(0, 2, 0);
+
             Scene.CurrentScene.AddSceneObject(cube1);
+            Scene.CurrentScene.AddSceneObject(quad1);
             Scene.CurrentScene.AmbientLight.LightColor = XNA.Color.Yellow;
             Scene.CurrentScene.ActiveCamera.Position += new XNA.Vector3(0, 1, 0);
-
-
         }
 
         private void FVertexWatcher_Changed(object sender, FileSystemEventArgs e)
@@ -115,6 +118,10 @@ namespace ShaderStudio
                         cube1.RegisteredStages.Add("CurrentVertex");
                         cube1.RegisteredStages.Add("CurrentFragment");
                         cube1.Reload();
+                        quad1.RegisteredStages.Clear();
+                        quad1.RegisteredStages.Add("CurrentVertex");
+                        quad1.RegisteredStages.Add("CurrentFragment");
+                        quad1.Reload();
 
                         //-- Ugly hack to avoid FileSystemWatcher be called twice
                         System.Timers.Timer watcherResetTimer = new System.Timers.Timer(1000) { AutoReset = false };
@@ -140,8 +147,8 @@ namespace ShaderStudio
             Gl.VB.Viewport(0, 0, GLCanvas.Width, GLCanvas.Height);
             Gl.VB.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            cube1.Rotation *= XNA.Quaternion.CreateFromYawPitchRoll(0.005f, 0.01f, 0);
-
+            ///cube1.Rotation *= XNA.Quaternion.CreateFromYawPitchRoll(0.005f, 0.01f, 0);
+            cube1.Rotation *= XNA.Quaternion.CreateFromYawPitchRoll(-0.005f, 0, 0);
             cube1?.ShaderProgram?.SetFloat("Time", Scene.CurrentScene.TotalTime);
             Scene.CurrentScene.AmbientLight.LightIntensity = (float)Math.Abs(Math.Sin((double)Scene.CurrentScene.TotalTime));
             Scene.CurrentScene.Render((float)GLCanvas.Width, (float)GLCanvas.Height);

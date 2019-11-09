@@ -34,6 +34,7 @@ namespace ShaderStudio.Objects
         protected uint vAO;
         protected uint vBO;
         protected uint eBO;
+        private uint vertexStride;
 
         public uint VAO
         {
@@ -56,12 +57,19 @@ namespace ShaderStudio.Objects
         {
             throw new NotImplementedException();
         }
+        public uint VertexStride
+        {
+            get { return this.vertexStride; }
+            protected set { this.vertexStride = value; }
+        }
 
         public virtual void SetBuffers() { throw new NotImplementedException(); }
         public virtual void SetProgram() { throw new NotImplementedException(); }
         public virtual void SetProgramParameters() { }
         public virtual void SetMVP(Matrix ViewMatrix, Matrix ProjectionMatrix)
         {
+            UpdateTransform();
+            ShaderProgram.SetMatrix("inverse_model", 1, false, InverseTransformMatrix, ShaderProgram.eMatrixType.Matrix4);
             ShaderProgram.SetMatrix("model", 1, false, TransformMatrix, ShaderProgram.eMatrixType.Matrix4);
             shaderProgram.SetMatrix("view", 1, false, ViewMatrix, ShaderProgram.eMatrixType.Matrix4);
             shaderProgram.SetMatrix("projection", 1, false, ProjectionMatrix, ShaderProgram.eMatrixType.Matrix4);

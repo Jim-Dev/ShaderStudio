@@ -166,9 +166,12 @@ namespace ShaderStudio.Core
         {
             SetVector(name, vector.X, vector.Y, vector.Z, vector.W);
         }
-        public void SetVector(string name, XNA.Color color)
+        public void SetVector(string name, XNA.Color color, bool useAlpha)
         {
-            SetVector(name, color.ToVector4());
+            if (useAlpha)
+                SetVector(name, color.ToVector4());
+            else
+                SetVector(name, color.ToVector3());
         }
         public void SetMatrix(string name, int count, bool transpose, float[] values, eMatrixType matrixType)
         {

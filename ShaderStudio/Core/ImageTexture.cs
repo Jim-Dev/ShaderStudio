@@ -91,8 +91,6 @@ namespace ShaderStudio.Core
 
                 Unlock();
             }
-
-
         }
 
         public void Bind()
