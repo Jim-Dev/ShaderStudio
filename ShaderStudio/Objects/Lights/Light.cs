@@ -20,6 +20,15 @@ namespace ShaderStudio.Objects.Lights
         private Primitives.Primitive gizmo;
         public Color LightColor = Color.White;
         public float LightIntensity = 1;
+        public eLightType LightType { get; set; }
+
+        public enum eLightType
+        {
+            Ambient,
+            Point,
+            Directional,
+            Spot
+        }
 
         public Light(Color lightColor, float lightIntensity)
           : base()

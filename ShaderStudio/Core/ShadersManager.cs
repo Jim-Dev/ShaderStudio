@@ -23,6 +23,7 @@ namespace ShaderStudio.Core
         public const string CURRENT_SHADER_FILENAME = "Current";
         public const string DEFAULT_SHADER_FILENAME = "Default";
 
+
         private Dictionary<string, ShaderStage> LoadedShaders;//ShaderName,Shader
 
         public event EventHandler CompilationError;

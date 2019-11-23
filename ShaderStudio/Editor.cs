@@ -31,7 +31,6 @@ namespace ShaderStudio
         #endregion
 
         Cube cube1;
-        Quad quad1;
 
         private float CameraMovementSpeed = 0.75f;
         private float CameraRotationSpeed = 0.75f;
@@ -95,14 +94,46 @@ namespace ShaderStudio
             cube1.Name = "CUBE1";
             cube1.Scale = new XNA.Vector3(1.5f, 1.5f, 1.5f);
 
-            quad1 = new Quad();
-            quad1.Name = "QUAD";
-            quad1.Position = new XNA.Vector3(0, 2, 0);
-
             Scene.CurrentScene.AddSceneObject(cube1);
-            Scene.CurrentScene.AddSceneObject(quad1);
-            Scene.CurrentScene.AmbientLight.LightColor = XNA.Color.Yellow;
             Scene.CurrentScene.ActiveCamera.Position += new XNA.Vector3(0, 1, 0);
+
+            AddDefaultLights();
+        }
+
+        private void AddDefaultLights()
+        {
+            Light ambientLight = new Light(XNA.Color.White, 0.05f);
+            ambientLight.LightType = Light.eLightType.Ambient;
+            Scene.CurrentScene.AddSceneObject(ambientLight);
+
+            Light simpleLight = new Light(XNA.Color.Cyan, 1f);
+            simpleLight.Position = new Microsoft.Xna.Framework.Vector3(1, 0.5f, 0.5f);
+            simpleLight.LightType = Light.eLightType.Point;
+            Light simpleLight2 = new Light(XNA.Color.Magenta, 1f);
+            simpleLight2.Position = new Microsoft.Xna.Framework.Vector3(-1, 0.5f, 0.5f);
+            simpleLight2.LightType = Light.eLightType.Point;
+
+            Light simpleLight3 = new Light(XNA.Color.Yellow, 0.2f);
+            simpleLight3.Position = new Microsoft.Xna.Framework.Vector3(0, 2.5f, 0.25f);
+            simpleLight3.LightType = Light.eLightType.Point;
+            Light simpleLight4 = new Light(XNA.Color.Yellow, 0.2f);
+            simpleLight4.Position = new Microsoft.Xna.Framework.Vector3(0, -2.5f, 0.25f);
+            simpleLight4.LightType = Light.eLightType.Point;
+
+            Light dirLight0 = new Light(XNA.Color.Red, 0.25f);
+            dirLight0.Position = new Microsoft.Xna.Framework.Vector3(1, 0, 1);
+            dirLight0.LightType = Light.eLightType.Directional;
+            Light dirLight1 = new Light(XNA.Color.Blue, 0.25f);
+            dirLight1.Position = new Microsoft.Xna.Framework.Vector3(-1, 0, 1);
+            dirLight1.LightType = Light.eLightType.Directional;
+
+            Scene.CurrentScene.AddSceneObject(simpleLight, "Light0");
+            Scene.CurrentScene.AddSceneObject(simpleLight2, "Light1");
+            Scene.CurrentScene.AddSceneObject(simpleLight3, "Light2");
+            Scene.CurrentScene.AddSceneObject(simpleLight4, "Light3");
+
+            Scene.CurrentScene.AddSceneObject(dirLight0, "DirLight0");
+            Scene.CurrentScene.AddSceneObject(dirLight1, "DirLight1");
         }
 
         private void FVertexWatcher_Changed(object sender, FileSystemEventArgs e)
@@ -118,10 +149,6 @@ namespace ShaderStudio
                         cube1.RegisteredStages.Add("CurrentVertex");
                         cube1.RegisteredStages.Add("CurrentFragment");
                         cube1.Reload();
-                        quad1.RegisteredStages.Clear();
-                        quad1.RegisteredStages.Add("CurrentVertex");
-                        quad1.RegisteredStages.Add("CurrentFragment");
-                        quad1.Reload();
 
                         //-- Ugly hack to avoid FileSystemWatcher be called twice
                         System.Timers.Timer watcherResetTimer = new System.Timers.Timer(1000) { AutoReset = false };
@@ -150,7 +177,7 @@ namespace ShaderStudio
             ///cube1.Rotation *= XNA.Quaternion.CreateFromYawPitchRoll(0.005f, 0.01f, 0);
             cube1.Rotation *= XNA.Quaternion.CreateFromYawPitchRoll(-0.005f, 0, 0);
             cube1?.ShaderProgram?.SetFloat("Time", Scene.CurrentScene.TotalTime);
-            Scene.CurrentScene.AmbientLight.LightIntensity = (float)Math.Abs(Math.Sin((double)Scene.CurrentScene.TotalTime));
+            //Scene.CurrentScene.AmbientLight.LightIntensity = (float)Math.Abs(Math.Sin((double)Scene.CurrentScene.TotalTime));
             Scene.CurrentScene.Render((float)GLCanvas.Width, (float)GLCanvas.Height);
 
 
