@@ -150,7 +150,19 @@ namespace ShaderStudio.Core
 
                     lightIndex++;
                 }
+                lightIndex = 0;
+                foreach (SpotLight spotLight in SceneLights.GetLightsByType(Light.eLightType.Spot))
+                {
+                    renderObj?.ShaderProgram?.SetVector(string.Format("SpotLights[{0}].position", lightIndex), spotLight.Position);
+                    renderObj?.ShaderProgram?.SetVector(string.Format("SpotLights[{0}].direction", lightIndex), spotLight.Direction);
+                    renderObj?.ShaderProgram?.SetFloat(string.Format("SpotLights[{0}].cutoff", lightIndex), (float)Math.Cos(XNA.MathHelper.ToRadians(spotLight.InnerAngle)));
+                    renderObj?.ShaderProgram?.SetFloat(string.Format("SpotLights[{0}].outerCutoff", lightIndex), (float)Math.Cos(XNA.MathHelper.ToRadians(spotLight.OuterAngle)));
+                    renderObj?.ShaderProgram?.SetVector(string.Format("SpotLights[{0}].diffuse", lightIndex), spotLight.LightColor, false);
+                    renderObj?.ShaderProgram?.SetVector(string.Format("SpotLights[{0}].specular", lightIndex), spotLight.LightColor, false);
+                    renderObj?.ShaderProgram?.SetFloat(string.Format("SpotLights[{0}].intensity", lightIndex), spotLight.LightIntensity);
 
+                    lightIndex++;
+                }
             }
         }
 
@@ -316,7 +328,7 @@ namespace ShaderStudio.Core
                         }
                         break;
                     case Light.eLightType.Spot:
-                        if (SpotLightsCount < SpotLightsCount)
+                        if (SpotLightsCount < MAX_LIGHT_SPOT)
                         {
                             SpotLightsCount++;
                             sceneLightObjects.Add(light.Name, light);

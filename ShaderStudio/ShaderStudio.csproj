@@ -84,6 +84,7 @@
     <Compile Include="Objects\Lights\DirectionalLight.cs" />
     <Compile Include="Objects\Lights\Light.cs" />
     <Compile Include="Objects\Lights\PointLight.cs" />
+    <Compile Include="Objects\Lights\SpotLight.cs" />
     <Compile Include="Objects\Primitives\Cube.cs" />
     <Compile Include="Objects\Primitives\Grid.cs" />
     <Compile Include="Objects\Primitives\Primitive.cs" />

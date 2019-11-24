@@ -123,6 +123,17 @@ namespace ShaderStudio
             dirLight1.Position = new Microsoft.Xna.Framework.Vector3(-1, 0, 1);
             dirLight1.Direction = -dirLight1.Position;
 
+            SpotLight spotLight0 = new SpotLight(XNA.Color.Green, 0.5f);
+            spotLight0.Position = new XNA.Vector3(0, -0.5f, 2.5f);
+            spotLight0.Direction = -spotLight0.Position;
+            spotLight0.InnerAngle = 15f;
+            spotLight0.OuterAngle = 20f;
+            SpotLight spotLight1 = new SpotLight(XNA.Color.Cyan, 0.5f);
+            spotLight1.Position = new XNA.Vector3(0, 0.5f, 2.5f);
+            spotLight1.Direction = new XNA.Vector3(0,0,-1);
+            spotLight1.InnerAngle = 5f;
+            spotLight1.OuterAngle = 10f;
+
             Scene.CurrentScene.AddSceneObject(simpleLight, "Light0");
             Scene.CurrentScene.AddSceneObject(simpleLight2, "Light1");
             Scene.CurrentScene.AddSceneObject(simpleLight3, "Light2");
@@ -130,6 +141,9 @@ namespace ShaderStudio
 
             Scene.CurrentScene.AddSceneObject(dirLight0, "DirLight0");
             Scene.CurrentScene.AddSceneObject(dirLight1, "DirLight1");
+            
+            Scene.CurrentScene.AddSceneObject(spotLight0, "spotLight0");
+            Scene.CurrentScene.AddSceneObject(spotLight1, "spotLight1");
         }
 
         private void FVertexWatcher_Changed(object sender, FileSystemEventArgs e)
