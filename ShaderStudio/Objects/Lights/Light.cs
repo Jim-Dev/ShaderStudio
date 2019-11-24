@@ -20,10 +20,11 @@ namespace ShaderStudio.Objects.Lights
         private Primitives.Primitive gizmo;
         public Color LightColor = Color.White;
         public float LightIntensity = 1;
-        public eLightType LightType { get; set; }
+        public eLightType LightType { get; protected set; }
 
         public enum eLightType
         {
+            None,
             Ambient,
             Point,
             Directional,
@@ -65,7 +66,6 @@ namespace ShaderStudio.Objects.Lights
 
         public override void Render(Matrix ViewMatrix, Matrix ProjectionMatrix)
         {
-
             gizmo.Position = this.Position;
             gizmo.Render(ViewMatrix, ProjectionMatrix);
             gizmo.ShaderProgram.SetVector(SHADER_PARAM_LIGHT_COLOR, LightColor, false);

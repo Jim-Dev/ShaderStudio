@@ -102,30 +102,26 @@ namespace ShaderStudio
 
         private void AddDefaultLights()
         {
-            Light ambientLight = new Light(XNA.Color.White, 0.05f);
-            ambientLight.LightType = Light.eLightType.Ambient;
+            AmbientLight ambientLight = new AmbientLight(XNA.Color.White, 0.05f);
             Scene.CurrentScene.AddSceneObject(ambientLight);
 
-            Light simpleLight = new Light(XNA.Color.Cyan, 1f);
+            PointLight simpleLight = new PointLight(XNA.Color.Cyan, 1f);
             simpleLight.Position = new Microsoft.Xna.Framework.Vector3(1, 0.5f, 0.5f);
-            simpleLight.LightType = Light.eLightType.Point;
-            Light simpleLight2 = new Light(XNA.Color.Magenta, 1f);
+            PointLight simpleLight2 = new PointLight(XNA.Color.Magenta, 1f);
             simpleLight2.Position = new Microsoft.Xna.Framework.Vector3(-1, 0.5f, 0.5f);
-            simpleLight2.LightType = Light.eLightType.Point;
 
-            Light simpleLight3 = new Light(XNA.Color.Yellow, 0.2f);
+            PointLight simpleLight3 = new PointLight(XNA.Color.Yellow, 0.2f);
             simpleLight3.Position = new Microsoft.Xna.Framework.Vector3(0, 2.5f, 0.25f);
-            simpleLight3.LightType = Light.eLightType.Point;
-            Light simpleLight4 = new Light(XNA.Color.Yellow, 0.2f);
+            PointLight simpleLight4 = new PointLight(XNA.Color.Yellow, 0.2f);
             simpleLight4.Position = new Microsoft.Xna.Framework.Vector3(0, -2.5f, 0.25f);
-            simpleLight4.LightType = Light.eLightType.Point;
 
-            Light dirLight0 = new Light(XNA.Color.Red, 0.25f);
+            
+            DirectionalLight dirLight0 = new DirectionalLight(XNA.Color.Red, 0.25f);
             dirLight0.Position = new Microsoft.Xna.Framework.Vector3(1, 0, 1);
-            dirLight0.LightType = Light.eLightType.Directional;
-            Light dirLight1 = new Light(XNA.Color.Blue, 0.25f);
+            dirLight0.Direction = -dirLight0.Position;
+            DirectionalLight dirLight1 = new DirectionalLight(XNA.Color.Blue, 0.25f);
             dirLight1.Position = new Microsoft.Xna.Framework.Vector3(-1, 0, 1);
-            dirLight1.LightType = Light.eLightType.Directional;
+            dirLight1.Direction = -dirLight1.Position;
 
             Scene.CurrentScene.AddSceneObject(simpleLight, "Light0");
             Scene.CurrentScene.AddSceneObject(simpleLight2, "Light1");

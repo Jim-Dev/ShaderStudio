@@ -113,8 +113,8 @@ namespace ShaderStudio.Core
 
                 renderObj?.ShaderProgram?.SetVector(Constants.ShaderConstants.SHADER_PARAM_LIT_CAMERA_POSITION, Scene.CurrentScene.ActiveCamera.Position);
 
-                renderObj?.ShaderProgram?.SetVector(Constants.ShaderConstants.SHADER_PARAM_LIT_AMBIENT_COLOR, SceneLights.AmbientLight.LightColor, false);
-                renderObj?.ShaderProgram?.SetFloat(Constants.ShaderConstants.SHADER_PARAM_LIT_AMBIENT_INTENSITY, SceneLights.AmbientLight.LightIntensity);
+                renderObj?.ShaderProgram?.SetVector(Constants.ShaderConstants.SHADER_PARAM_LIT_AMBIENT_COLOR, SceneLights.Ambient.LightColor, false);
+                renderObj?.ShaderProgram?.SetFloat(Constants.ShaderConstants.SHADER_PARAM_LIT_AMBIENT_INTENSITY, SceneLights.Ambient.LightIntensity);
 
                 if (simpleLight != null)
                 {
@@ -128,32 +128,28 @@ namespace ShaderStudio.Core
                 renderObj?.ShaderProgram?.SetFloat("material.shininess", 32.0f);
 
                 int lightIndex = 0;
-                foreach (Light pointLight in SceneLights.GetLightsByType(Light.eLightType.Point))
+                foreach (PointLight pointLight in SceneLights.GetLightsByType(Light.eLightType.Point))
                 {
                     renderObj?.ShaderProgram?.SetVector(string.Format("PointLights[{0}].position", lightIndex), pointLight.Position);
                     renderObj?.ShaderProgram?.SetVector(string.Format("PointLights[{0}].diffuse", lightIndex), pointLight.LightColor, false);
                     renderObj?.ShaderProgram?.SetVector(string.Format("PointLights[{0}].specular", lightIndex), pointLight.LightColor, false);
                     renderObj?.ShaderProgram?.SetFloat(string.Format("PointLights[{0}].intensity", lightIndex), pointLight.LightIntensity);
 
-                    renderObj?.ShaderProgram?.SetFloat(string.Format("PointLights[{0}].constant", lightIndex), 1.0f);
-                    renderObj?.ShaderProgram?.SetFloat(string.Format("PointLights[{0}].linear", lightIndex), 0.09f);
-                    renderObj?.ShaderProgram?.SetFloat(string.Format("PointLights[{0}].quadratic", lightIndex), 0.032f);
+                    renderObj?.ShaderProgram?.SetFloat(string.Format("PointLights[{0}].constant", lightIndex), pointLight.Constant);
+                    renderObj?.ShaderProgram?.SetFloat(string.Format("PointLights[{0}].linear", lightIndex), pointLight.Linear);
+                    renderObj?.ShaderProgram?.SetFloat(string.Format("PointLights[{0}].quadratic", lightIndex), pointLight.Quadratic);
                     lightIndex++;
                 }
                 lightIndex = 0;
-                foreach (Light pointLight in SceneLights.GetLightsByType(Light.eLightType.Directional))
+                foreach (DirectionalLight directionalLight in SceneLights.GetLightsByType(Light.eLightType.Directional))
                 {
-                    renderObj?.ShaderProgram?.SetVector(string.Format("DirLights[{0}].direction", lightIndex), -pointLight.Position);
-                    renderObj?.ShaderProgram?.SetVector(string.Format("DirLights[{0}].diffuse", lightIndex), pointLight.LightColor, false);
-                    renderObj?.ShaderProgram?.SetVector(string.Format("DirLights[{0}].specular", lightIndex), pointLight.LightColor, false);
-                    renderObj?.ShaderProgram?.SetFloat(string.Format("DirLights[{0}].intensity", lightIndex), pointLight.LightIntensity);
+                    renderObj?.ShaderProgram?.SetVector(string.Format("DirLights[{0}].direction", lightIndex), directionalLight.Direction);
+                    renderObj?.ShaderProgram?.SetVector(string.Format("DirLights[{0}].diffuse", lightIndex), directionalLight.LightColor, false);
+                    renderObj?.ShaderProgram?.SetVector(string.Format("DirLights[{0}].specular", lightIndex), directionalLight.LightColor, false);
+                    renderObj?.ShaderProgram?.SetFloat(string.Format("DirLights[{0}].intensity", lightIndex), directionalLight.LightIntensity);
 
                     lightIndex++;
                 }
-
-                //renderObj?.ShaderProgram?.SetVector("light.ambient", 0.2f, 0.2f, 0.2f);
-                //renderObj?.ShaderProgram?.SetVector("light.diffuse", 0.5f, 0.5f, 0.5f); // darken the light a bit to fit the scene
-                //renderObj?.ShaderProgram?.SetVector("light.specular", 1.0f, 1.0f, 1.0f);
 
             }
         }
@@ -258,7 +254,7 @@ namespace ShaderStudio.Core
         public const int MAX_LIGHT_POINT = 4;
         public const int MAX_LIGHT_SPOT = 2;
 
-        public Light AmbientLight { get; private set; }
+        public AmbientLight Ambient { get; private set; }
 
         public int PointLightsCount { get; private set; }
         public int DirectionalLightsCount { get; private set; }
@@ -268,15 +264,15 @@ namespace ShaderStudio.Core
 
         public SceneLights()
         {
-            AmbientLight = DefaultAmbientLight;
+            Ambient = DefaultAmbientLight;
             sceneLightObjects = new Dictionary<string, Light>();
         }
 
-        public Light DefaultAmbientLight
+        public AmbientLight DefaultAmbientLight
         {
             get
             {
-                return new Light(new XNA.Color(0.5f, 0.5f, 0.5f), 0.5f);
+                return new AmbientLight(new XNA.Color(0.5f, 0.5f, 0.5f), 0.5f);
             }
         }
 
@@ -300,8 +296,10 @@ namespace ShaderStudio.Core
             {
                 switch (light.LightType)
                 {
+                    case Light.eLightType.None:
+                        throw new InvalidOperationException("LightType should not be None");
                     case Light.eLightType.Ambient:
-                        AmbientLight = light;
+                        Ambient = light as AmbientLight;
                         break;
                     case Light.eLightType.Point:
                         if (PointLightsCount < MAX_LIGHT_POINT)
@@ -337,7 +335,7 @@ namespace ShaderStudio.Core
                 switch (sceneLightObjects[lightObjectName].LightType)
                 {
                     case Light.eLightType.Ambient:
-                        AmbientLight = DefaultAmbientLight;
+                        Ambient = DefaultAmbientLight;
                         break;
                     case Light.eLightType.Point:
                         PointLightsCount--;
