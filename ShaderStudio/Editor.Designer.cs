@@ -58,7 +58,10 @@
             this.GLCanvas.ContextCreated += new System.EventHandler<OpenGL.GlControlEventArgs>(this.GLCanvas_ContextCreated);
             this.GLCanvas.ContextDestroying += new System.EventHandler<OpenGL.GlControlEventArgs>(this.GLCanvas_ContextDestroying);
             this.GLCanvas.Render += new System.EventHandler<OpenGL.GlControlEventArgs>(this.GLCanvas_Render);
-            this.GLCanvas.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GLCanvas_KeyDown);
+            this.GLCanvas.DoubleClick += new System.EventHandler(this.GLCanvas_DoubleClick);
+            this.GLCanvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GLCanvas_MouseDown);
+            this.GLCanvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GLCanvas_MouseMove);
+            this.GLCanvas.MouseUp += new System.Windows.Forms.MouseEventHandler(this.GLCanvas_MouseUp);
             // 
             // fswCurrentShaderWatcher
             // 

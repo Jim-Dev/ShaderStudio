@@ -30,10 +30,23 @@ namespace ShaderStudio
         public const string MESSAGE_GL_CONTEXT_DESTROYED = "OpenGL Context Destroyed";
         #endregion
 
+        #region MouseFlags
+
+        private bool isLeftMousePressed = false;
+        private bool isRightMousePressed = false;
+        private bool isMiddleMousePressed = false;
+
+        private Point lastMouseLocation = Point.Empty;
+        private Point deltaMouseLocation = Point.Empty;
+
+        private XNA.Vector3 startCameraPosition = new XNA.Vector3(0, 1, 5);
+
+        #endregion
+
         Cube cube1;
 
         private float CameraMovementSpeed = 0.75f;
-        private float CameraRotationSpeed = 0.75f;
+        private float CameraRotationSpeed = 0.25f;
 
         private float CameraDeltaPitch = 0;
         private float CameraDeltaYaw = 0;
@@ -48,7 +61,7 @@ namespace ShaderStudio
         private void Instance_CompilationSuccess(object sender, EventArgs e)
         {
             StringBuilder sBuilder = new StringBuilder(ShadersManager.Instance.InfoLog);
-            if (cube1!=null && cube1.ShaderProgram!=null)
+            if (cube1 != null && cube1.ShaderProgram != null)
             {
                 sBuilder.AppendLine("Attributes:");
                 foreach (string shaderAttribute in cube1.ShaderProgram.GetAttributeNames())
@@ -58,10 +71,10 @@ namespace ShaderStudio
                 sBuilder.AppendLine("Uniforms:");
                 foreach (string shaderUniforms in cube1.ShaderProgram.GetUniformNames())
                 {
-                    sBuilder.AppendLine("\t"+shaderUniforms);
+                    sBuilder.AppendLine("\t" + shaderUniforms);
                 }
             }
-           
+
             txbOutput.Text = sBuilder.ToString();
             sBuilder.Clear();
             this.Invalidate(true);
@@ -74,6 +87,15 @@ namespace ShaderStudio
         }
 
         #region OpenGL Canvas
+
+        private void ResetCamera()
+        {
+            Scene.CurrentScene.ActiveCamera.Position = startCameraPosition;
+            Scene.CurrentScene.ActiveCamera.Rotation = Camera.Default.Rotation;
+            Scene.CurrentScene.ActiveCamera.CameraDirection = Camera.Default.CameraDirection;
+            Scene.CurrentScene.ActiveCamera.CameraFront = Camera.Default.CameraFront;
+        }
+
         private void GLCanvas_ContextCreated(object sender, GlControlEventArgs e)
         {
             // Here you can allocate resources Or initialize state
@@ -95,7 +117,7 @@ namespace ShaderStudio
             cube1.Scale = new XNA.Vector3(1.5f, 1.5f, 1.5f);
 
             Scene.CurrentScene.AddSceneObject(cube1);
-            Scene.CurrentScene.ActiveCamera.Position += new XNA.Vector3(0, 1, 0);
+            ResetCamera();
 
             AddDefaultLights();
         }
@@ -115,7 +137,7 @@ namespace ShaderStudio
             PointLight simpleLight4 = new PointLight(XNA.Color.Yellow, 0.2f);
             simpleLight4.Position = new Microsoft.Xna.Framework.Vector3(0, -2.5f, 0.25f);
 
-            
+
             DirectionalLight dirLight0 = new DirectionalLight(XNA.Color.Red, 0.25f);
             dirLight0.Position = new Microsoft.Xna.Framework.Vector3(1, 0, 1);
             dirLight0.Direction = -dirLight0.Position;
@@ -130,7 +152,7 @@ namespace ShaderStudio
             spotLight0.OuterAngle = 20f;
             SpotLight spotLight1 = new SpotLight(XNA.Color.Cyan, 0.5f);
             spotLight1.Position = new XNA.Vector3(0, 0.5f, 2.5f);
-            spotLight1.Direction = new XNA.Vector3(0,0,-1);
+            spotLight1.Direction = new XNA.Vector3(0, 0, -1);
             spotLight1.InnerAngle = 5f;
             spotLight1.OuterAngle = 10f;
 
@@ -141,7 +163,7 @@ namespace ShaderStudio
 
             Scene.CurrentScene.AddSceneObject(dirLight0, "DirLight0");
             Scene.CurrentScene.AddSceneObject(dirLight1, "DirLight1");
-            
+
             Scene.CurrentScene.AddSceneObject(spotLight0, "spotLight0");
             Scene.CurrentScene.AddSceneObject(spotLight1, "spotLight1");
         }
@@ -153,7 +175,7 @@ namespace ShaderStudio
                 isWatcherProcessingFile = true;
                 lock (fsw_lock)
                 {
-                    if (cube1 !=null)
+                    if (cube1 != null)
                     {
                         cube1.RegisteredStages.Clear();
                         cube1.RegisteredStages.Add("CurrentVertex");
@@ -190,72 +212,105 @@ namespace ShaderStudio
             //Scene.CurrentScene.AmbientLight.LightIntensity = (float)Math.Abs(Math.Sin((double)Scene.CurrentScene.TotalTime));
             Scene.CurrentScene.Render((float)GLCanvas.Width, (float)GLCanvas.Height);
 
+            HandleMouseInput();
 
         }
         #endregion
 
-        private void GLCanvas_KeyDown(object sender, KeyEventArgs e)
-        {
-            XNA.Vector3 camPositionDelta = XNA.Vector3.Zero;
+        #region MouseControl
 
-            #region CamPosition
-            if (e.KeyCode == Keys.T)
-            {
-                camPositionDelta += CameraMovementSpeed * Scene.CurrentScene.DeltaTime *  Scene.CurrentScene.ActiveCamera.CameraUp;
-            }
-            else if (e.KeyCode == Keys.G)
-            {
-                camPositionDelta -= CameraMovementSpeed * Scene.CurrentScene.DeltaTime *  Scene.CurrentScene.ActiveCamera.CameraUp;
-            }
-            if (e.KeyCode == Keys.W)
-            {
-                camPositionDelta += CameraMovementSpeed * Scene.CurrentScene.DeltaTime *  Scene.CurrentScene.ActiveCamera.CameraFront;
-            }
-            else if (e.KeyCode == Keys.S)
-            {
-                camPositionDelta -= CameraMovementSpeed * Scene.CurrentScene.DeltaTime *  Scene.CurrentScene.ActiveCamera.CameraFront;
-            }
-            if (e.KeyCode == Keys.A)
-            {
-                camPositionDelta -= XNA.Vector3.Normalize(XNA.Vector3.Cross( Scene.CurrentScene.ActiveCamera.CameraFront,  Scene.CurrentScene.ActiveCamera.CameraUp)) * Scene.CurrentScene.DeltaTime * CameraMovementSpeed;//Local
-            }
-            else if (e.KeyCode == Keys.D)
-            {
-                camPositionDelta += XNA.Vector3.Normalize(XNA.Vector3.Cross( Scene.CurrentScene.ActiveCamera.CameraFront,  Scene.CurrentScene.ActiveCamera.CameraUp)) * Scene.CurrentScene.DeltaTime * CameraMovementSpeed;
-            }
-            #endregion
+        private void HandleMouseInput()
+        {
+
             #region CamRotation
             CameraDeltaPitch = 0;
             CameraDeltaYaw = 0;
 
-            if (e.KeyCode == Keys.Q)
-            {
-                CameraDeltaYaw = CameraRotationSpeed * Scene.CurrentScene.DeltaTime;
-            }
+            CameraDeltaYaw += deltaMouseLocation.X * CameraRotationSpeed * Scene.CurrentScene.DeltaTime;
+            CameraDeltaPitch += deltaMouseLocation.Y * CameraRotationSpeed * Scene.CurrentScene.DeltaTime;
 
-            if (e.KeyCode == Keys.E)
-            {
-                CameraDeltaYaw = -CameraRotationSpeed * Scene.CurrentScene.DeltaTime;
-            }
-            if (e.KeyCode == Keys.R)
-            {
-                CameraDeltaPitch = CameraRotationSpeed * Scene.CurrentScene.DeltaTime;
-            }
-
-            if (e.KeyCode == Keys.F)
-            {
-                CameraDeltaPitch = -CameraRotationSpeed * Scene.CurrentScene.DeltaTime;
-            }
             XNA.Quaternion q = XNA.Quaternion.CreateFromYawPitchRoll(CameraDeltaYaw, CameraDeltaPitch, 0);
             #endregion
 
-            Scene.CurrentScene.ActiveCamera.Position += camPositionDelta;
-            Scene.CurrentScene.ActiveCamera.CameraFront = XNA.Vector3.Normalize(XNA.Vector3.Transform( Scene.CurrentScene.ActiveCamera.CameraFront, q));
+            if (isLeftMousePressed)
+                Scene.CurrentScene.ActiveCamera.Position += new XNA.Vector3(deltaMouseLocation.X, -deltaMouseLocation.Y, 0) * CameraMovementSpeed * Scene.CurrentScene.DeltaTime;
+            else if (isRightMousePressed)
+                Scene.CurrentScene.ActiveCamera.CameraFront = XNA.Vector3.Normalize(XNA.Vector3.Transform(Scene.CurrentScene.ActiveCamera.CameraFront, q));
+
+            Console.WriteLine(Scene.CurrentScene.ActiveCamera.Rotation);
         }
+
+        private void GLCanvas_MouseDown(object sender, MouseEventArgs e)
+        {
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    isLeftMousePressed = true;
+                    lastMouseLocation = e.Location;
+                    break;
+                case MouseButtons.None:
+                    break;
+                case MouseButtons.Right:
+                    isRightMousePressed = true;
+                    lastMouseLocation = e.Location;
+                    break;
+                case MouseButtons.Middle:
+                    isMiddleMousePressed = true;
+                    break;
+                case MouseButtons.XButton1:
+                    break;
+                case MouseButtons.XButton2:
+                    break;
+                default:
+                    break;
+            }
+        }
+        private void GLCanvas_MouseUp(object sender, MouseEventArgs e)
+        {
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    isLeftMousePressed = false;
+                    lastMouseLocation = Point.Empty;
+                    deltaMouseLocation = Point.Empty;
+                    break;
+                case MouseButtons.None:
+                    break;
+                case MouseButtons.Right:
+                    isRightMousePressed = false;
+                    lastMouseLocation = Point.Empty;
+                    deltaMouseLocation = Point.Empty;
+                    break;
+                case MouseButtons.Middle:
+                    isMiddleMousePressed = false;
+                    break;
+                case MouseButtons.XButton1:
+                    break;
+                case MouseButtons.XButton2:
+                    break;
+                default:
+                    break;
+            }
+        }
+        private void GLCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Right)
+            {
+                deltaMouseLocation = new Point(lastMouseLocation.X - e.X, lastMouseLocation.Y - e.Y);
+                lastMouseLocation = e.Location;
+            }
+        }
+
+        private void GLCanvas_DoubleClick(object sender, EventArgs e)
+        {
+            ResetCamera();
+        }
+        #endregion
 
         private void btnClearOutput_Click(object sender, EventArgs e)
         {
             txbOutput.Text = string.Empty;
         }
+
     }
 }
