@@ -21,12 +21,6 @@ namespace ShaderStudio.Objects.Primitives
         public virtual float[] Vertices { get; }
         public virtual uint[] Indices { get; }
 
-        private string mainTextureName = string.Empty;
-        private string secondaryTextureName = string.Empty;
-
-        private ImageTexture mainImageTexture;
-        private ImageTexture secondaryImageTexture;
-
         public Primitive(ShaderProgram shaderProgram)
            : base(shaderProgram)
         {
