@@ -96,7 +96,10 @@ namespace ShaderStudio.Objects.Primitives
                 string texturePath = string.Format(ImageTexture.DEFAULT_TEXTURE_PATH_TEMPLATE, i);
 
                 if (!File.Exists(texturePath))
-                    File.Copy(Path.Combine(ImageTexture.TEXTURES_FOLDER, DEFAULT_TEXTURE_NAME),texturePath);
+                {
+                    Console.WriteLine("WARNING: texture {0} not found, using default texture", i);
+                    File.Copy(Path.Combine(ImageTexture.TEXTURES_FOLDER, DEFAULT_TEXTURE_NAME), texturePath);
+                }
             }
             
             ImageTexture tex0 = new ImageTexture(string.Format(ImageTexture.DEFAULT_TEXTURE_FILENAME_TEMPLATE, 0), RotateFlipType.RotateNoneFlipNone);
