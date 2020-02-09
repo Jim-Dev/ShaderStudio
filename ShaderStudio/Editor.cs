@@ -10,7 +10,6 @@ using System.Windows.Forms;
 
 using XNA = Microsoft.Xna.Framework;
 
-using ScintillaNET;
 using OpenGL;
 using ShaderStudio.Core;
 using ShaderStudio.Objects.Primitives;
