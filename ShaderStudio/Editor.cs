@@ -207,7 +207,6 @@ namespace ShaderStudio
             Gl.VB.Viewport(0, 0, GLCanvas.Width, GLCanvas.Height);
             Gl.VB.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            ///cube1.Rotation *= XNA.Quaternion.CreateFromYawPitchRoll(0.005f, 0.01f, 0);
             cube1.Rotation *= XNA.Quaternion.CreateFromYawPitchRoll(-0.005f, 0, 0);
             cube1?.ShaderProgram?.SetFloat("Time", Scene.CurrentScene.TotalTime);
             //Scene.CurrentScene.AmbientLight.LightIntensity = (float)Math.Abs(Math.Sin((double)Scene.CurrentScene.TotalTime));
@@ -229,20 +228,13 @@ namespace ShaderStudio
             CameraDeltaPitch += deltaMouseLocation.X * CameraRotationSpeed * Scene.CurrentScene.DeltaTime;
             CameraDeltaYaw += deltaMouseLocation.Y * CameraRotationSpeed * Scene.CurrentScene.DeltaTime;
 
-            //XNA.Quaternion q = XNA.Quaternion.CreateFromYawPitchRoll(CameraDeltaPitch,CameraDeltaYaw , 0);
             #endregion
 
             if (isLeftMousePressed)
                 Scene.CurrentScene.ActiveCamera.Position += new XNA.Vector3(deltaMouseLocation.X, -deltaMouseLocation.Y, 0) * CameraMovementSpeed * Scene.CurrentScene.DeltaTime;
             else if (isRightMousePressed)
-            {
-               Scene.CurrentScene.ActiveCamera.CameraTarget+= new XNA.Vector3(deltaMouseLocation.X, -deltaMouseLocation.Y, 0) * CameraMovementSpeed * Scene.CurrentScene.DeltaTime;
-                //Scene.CurrentScene.ActiveCamera.CameraFront = XNA.Vector3.Normalize(XNA.Vector3.Transform(Scene.CurrentScene.ActiveCamera.CameraFront, q));
-                //Scene.CurrentScene.ActiveCamera.SetDirection(CameraDeltaPitch,CameraDeltaYaw, 0);
+                Scene.CurrentScene.ActiveCamera.CameraTarget += new XNA.Vector3(deltaMouseLocation.X, -deltaMouseLocation.Y, 0) * CameraMovementSpeed * Scene.CurrentScene.DeltaTime;
 
-            }
-
-            Console.WriteLine(Scene.CurrentScene.ActiveCamera.Rotation);
         }
 
         private void GLCanvas_MouseDown(object sender, MouseEventArgs e)

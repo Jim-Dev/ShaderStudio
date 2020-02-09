@@ -1,17 +1,4 @@
 ﻿#version 330 core
-out vec4 FragColor;
-
-in vec3 VertexColor;
-in vec3 VertexNormal;
-in vec2 TexCoord;
-in vec3 FragPosition;
-uniform float Time;
-
-uniform sampler2D _TEX0;
-uniform sampler2D _TEX1;
-uniform sampler2D _TEX2;
-uniform sampler2D _TEX3;
-#version 330 core
 
 #define L_MAX_DIRECTIONAL 2
 #define L_MAX_POINT 4
