@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShaderStudio.Objects.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,7 @@ namespace ShaderStudio.Core
         public XNA.Quaternion Rotation = XNA.Quaternion.Identity;
         public XNA.Vector3 Scale = XNA.Vector3.One;
 
-        public XNA.Vector3 CameraTarget = XNA.Vector3.Zero;
+        private XNA.Vector3 cameraTarget = XNA.Vector3.Zero;
         public XNA.Vector3 CameraDirection = XNA.Vector3.Zero;
         public XNA.Vector3 CameraUp = XNA.Vector3.Zero;
         public XNA.Vector3 CameraRight = XNA.Vector3.Zero;
@@ -25,6 +26,18 @@ namespace ShaderStudio.Core
 
         public float NearPlane = 0.1f;
         public float FarPlane = 100f;
+
+        private Cross cameraTargetGizmo;
+
+        public XNA.Vector3 CameraTarget
+        {
+            get { return this.cameraTarget; }
+            set
+            {
+                this.cameraTarget = value;
+                cameraTargetGizmo.Position = value;
+            }
+        }
 
         public float CameraFOV
         {
@@ -42,16 +55,25 @@ namespace ShaderStudio.Core
 
         public Camera()
         {
+            cameraTargetGizmo = new Cross();
+            cameraTargetGizmo.Scale = new XNA.Vector3(0.25f);
+            Scene.CurrentScene.AddSceneObject(cameraTargetGizmo);
+        }
 
+        public void SetDirection(float pitch, float yaw, float roll)
+        {
+            CameraDirection.X = (float)(Math.Cos(yaw) * Math.Cos(pitch));
+            CameraDirection.Y = (float)(Math.Sin(pitch));
+            CameraDirection.Z = (float)(Math.Sin(yaw) * Math.Cos(pitch));
         }
 
         public XNA.Matrix GetViewMatrix()
         {
             CameraDirection = XNA.Vector3.Normalize(Position - CameraTarget);
             CameraRight = XNA.Vector3.Normalize(XNA.Vector3.Cross(XNA.Vector3.Up, CameraDirection));
-            CameraUp = XNA.Vector3.Cross(CameraDirection, CameraRight);
+            CameraUp = XNA.Vector3.Normalize(XNA.Vector3.Cross(CameraDirection, CameraRight));
 
-            XNA.Matrix output = XNA.Matrix.CreateLookAt(Position, Position + CameraFront, CameraUp);
+            XNA.Matrix output = XNA.Matrix.CreateLookAt(Position, CameraTarget, CameraUp);
 
             return output;
         }

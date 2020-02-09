@@ -44,7 +44,6 @@ namespace ShaderStudio
         #endregion
 
         Cube cube1;
-
         private float CameraMovementSpeed = 0.75f;
         private float CameraRotationSpeed = 0.25f;
 
@@ -94,6 +93,7 @@ namespace ShaderStudio
             Scene.CurrentScene.ActiveCamera.Rotation = Camera.Default.Rotation;
             Scene.CurrentScene.ActiveCamera.CameraDirection = Camera.Default.CameraDirection;
             Scene.CurrentScene.ActiveCamera.CameraFront = Camera.Default.CameraFront;
+            Scene.CurrentScene.ActiveCamera.CameraTarget = Camera.Default.CameraTarget;
         }
 
         private void GLCanvas_ContextCreated(object sender, GlControlEventArgs e)
@@ -117,6 +117,7 @@ namespace ShaderStudio
             cube1.Scale = new XNA.Vector3(1.5f, 1.5f, 1.5f);
 
             Scene.CurrentScene.AddSceneObject(cube1);
+
             ResetCamera();
 
             AddDefaultLights();
@@ -213,7 +214,6 @@ namespace ShaderStudio
             Scene.CurrentScene.Render((float)GLCanvas.Width, (float)GLCanvas.Height);
 
             HandleMouseInput();
-
         }
         #endregion
 
@@ -226,16 +226,21 @@ namespace ShaderStudio
             CameraDeltaPitch = 0;
             CameraDeltaYaw = 0;
 
-            CameraDeltaYaw += deltaMouseLocation.X * CameraRotationSpeed * Scene.CurrentScene.DeltaTime;
-            CameraDeltaPitch += deltaMouseLocation.Y * CameraRotationSpeed * Scene.CurrentScene.DeltaTime;
+            CameraDeltaPitch += deltaMouseLocation.X * CameraRotationSpeed * Scene.CurrentScene.DeltaTime;
+            CameraDeltaYaw += deltaMouseLocation.Y * CameraRotationSpeed * Scene.CurrentScene.DeltaTime;
 
-            XNA.Quaternion q = XNA.Quaternion.CreateFromYawPitchRoll(CameraDeltaYaw, CameraDeltaPitch, 0);
+            //XNA.Quaternion q = XNA.Quaternion.CreateFromYawPitchRoll(CameraDeltaPitch,CameraDeltaYaw , 0);
             #endregion
 
             if (isLeftMousePressed)
                 Scene.CurrentScene.ActiveCamera.Position += new XNA.Vector3(deltaMouseLocation.X, -deltaMouseLocation.Y, 0) * CameraMovementSpeed * Scene.CurrentScene.DeltaTime;
             else if (isRightMousePressed)
-                Scene.CurrentScene.ActiveCamera.CameraFront = XNA.Vector3.Normalize(XNA.Vector3.Transform(Scene.CurrentScene.ActiveCamera.CameraFront, q));
+            {
+               Scene.CurrentScene.ActiveCamera.CameraTarget+= new XNA.Vector3(deltaMouseLocation.X, -deltaMouseLocation.Y, 0) * CameraMovementSpeed * Scene.CurrentScene.DeltaTime;
+                //Scene.CurrentScene.ActiveCamera.CameraFront = XNA.Vector3.Normalize(XNA.Vector3.Transform(Scene.CurrentScene.ActiveCamera.CameraFront, q));
+                //Scene.CurrentScene.ActiveCamera.SetDirection(CameraDeltaPitch,CameraDeltaYaw, 0);
+
+            }
 
             Console.WriteLine(Scene.CurrentScene.ActiveCamera.Rotation);
         }
