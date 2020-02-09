@@ -9,6 +9,7 @@ using OpenGL;
 using XNA = Microsoft.Xna.Framework;
 using System.Drawing;
 using System.IO;
+using System.Drawing.Imaging;
 
 namespace ShaderStudio.Objects.Primitives
 {
@@ -80,6 +81,24 @@ namespace ShaderStudio.Objects.Primitives
             Gl.BindVertexArray(0);
 
         }
+
+        private void CreateDefaultTexture()
+        {
+            string defaultTexturePath = Path.Combine(ImageTexture.TEXTURES_FOLDER, DEFAULT_TEXTURE_NAME);
+            Console.WriteLine("Rebuilding Default Texture");
+            if (!File.Exists(defaultTexturePath))
+            {
+                using (Bitmap bmp = new Bitmap(32, 32))
+                {
+                    using (Graphics graphics = Graphics.FromImage(bmp))
+                    {
+                        graphics.Clear(Color.Gray);
+                    }
+                    bmp.Save(defaultTexturePath, ImageFormat.Png);
+                }
+            }
+        }
+
         public override void SetProgram()
         {
 
@@ -98,6 +117,8 @@ namespace ShaderStudio.Objects.Primitives
                 if (!File.Exists(texturePath))
                 {
                     Console.WriteLine("WARNING: texture {0} not found, using default texture", i);
+                    if (!File.Exists(Path.Combine(ImageTexture.TEXTURES_FOLDER, DEFAULT_TEXTURE_NAME)))
+                        CreateDefaultTexture();
                     File.Copy(Path.Combine(ImageTexture.TEXTURES_FOLDER, DEFAULT_TEXTURE_NAME), texturePath);
                 }
             }
