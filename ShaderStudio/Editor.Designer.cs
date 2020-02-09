@@ -33,7 +33,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnClearOutput = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.txbOutput = new ScintillaNET.Scintilla();
+            this.txbOutput = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.fswCurrentShaderWatcher)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -118,6 +118,7 @@
             // 
             this.txbOutput.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txbOutput.Location = new System.Drawing.Point(0, 23);
+            this.txbOutput.Multiline = true;
             this.txbOutput.Name = "txbOutput";
             this.txbOutput.Size = new System.Drawing.Size(484, 147);
             this.txbOutput.TabIndex = 2;
@@ -137,6 +138,7 @@
             this.panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -150,7 +152,7 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btnClearOutput;
-        private ScintillaNET.Scintilla txbOutput;
+        private System.Windows.Forms.TextBox txbOutput;
     }
 }
 
